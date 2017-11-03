@@ -12,7 +12,7 @@ import vavi.util.Debug;
 /**
  * Java version of windiff.
  * <p>
- * TODO JList ‚ğ JTable ‚É
+ * TODO JList ã‚’ JTable ã«
  * </p>
  * @author David Drysdale
  * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)

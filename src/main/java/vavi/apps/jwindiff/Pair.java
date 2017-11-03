@@ -201,11 +201,11 @@ Debug.printStackTrace(e);
         String[] b;
 
         if (ignoreWhiteSpace) {
-            a = DiffUtil.readLinesIgnoreWhiteSpace(left );
+            a = DiffUtil.readLinesIgnoreWhiteSpace(left);
             b = DiffUtil.readLinesIgnoreWhiteSpace(right);
         }
         else {
-            a = DiffUtil.readLines(left );
+            a = DiffUtil.readLines(left);
             b = DiffUtil.readLines(right);
         }
 

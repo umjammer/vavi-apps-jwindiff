@@ -28,8 +28,8 @@ import vavi.util.gnu.DiffUtil;
 
 
 /**
- * Controller. 
- * ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚»‚Ì‚à‚ÌBView ‚ğœ‚¢‚½‚à‚ÌB
+ * Controller.
+ * ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãã®ã‚‚ã®ã€‚View ã‚’é™¤ã„ãŸã‚‚ã®ã€‚
  *
  * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
  * @version 0.00 060726 nsano initial version <br>
@@ -46,10 +46,10 @@ class Controller {
 
     //----
 
-    /** ƒ‚ƒfƒ‹ */
+    /** ãƒ¢ãƒ‡ãƒ« */
     Model model;
 
-    /** ‘JˆÚƒ‚ƒfƒ‹ */
+    /** é·ç§»ãƒ¢ãƒ‡ãƒ« */
     Form form;
 
     //----
@@ -90,7 +90,7 @@ class Controller {
 
         form.redisplayOutlineBefore(model.getLeftFilePath(), model.getRightFilePath());
 
-        DefaultListModel listModel = new DefaultListModel();
+        DefaultListModel<Pair> listModel = new DefaultListModel<>();
 
         // set the current visibility of each pair
         for (int i = 0; i < model.pairs.size(); i++) {
@@ -531,9 +531,11 @@ Debug.println(i + ":ignore: " + file);
     /** form */
     void pageCompareTargetsDialog() {
         if (model.displayMode == DisplayMode.NONE_MODE) {
-            File left = model.getLeftFiles().get(0);
-            File right = model.getRightFiles().get(0);
-            form.initCompareTargetsDialog(left, right);
+            if (model.getLeftFiles().size() > 0 && model.getRightFiles().size() > 0) {
+                File left = model.getLeftFiles().get(0);
+                File right = model.getRightFiles().get(0);
+                form.initCompareTargetsDialog(left, right);
+            }
         }
         form.pageCompareTargetsDialog();
     }

@@ -20,7 +20,7 @@ import vavi.util.event.GenericSupport;
 
 /**
  * Form. (one of model???)
- * ƒ‚ƒfƒ‹‚É‰e‹¿‚µ‚È‚¢ƒf[ƒ^B‰æ–Ê‘JˆÚ“™
+ * ãƒ¢ãƒ‡ãƒ«ã«å½±éŸ¿ã—ãªã„ãƒ‡ãƒ¼ã‚¿ã€‚ç”»é¢é·ç§»ç­‰
  *
  * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
  * @version 0.00 060726 nsano initial version <br>
@@ -188,7 +188,7 @@ class Form {
     }
 
     /** */
-    void redisplayOutlineAfter(DefaultListModel listModel, Pair current) {
+    void redisplayOutlineAfter(DefaultListModel<?> listModel, Pair current) {
         viewUpdated(this, "redisplayOutlineAfter", listModel, current);
     }
 

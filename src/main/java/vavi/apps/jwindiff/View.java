@@ -78,9 +78,9 @@ class View {
     // main view ----
 
     /** */
-    JList mainView;
+    JList<Object> mainView;
 
-    /** TODO é©ìÆê∂ê¨ */
+    /** TODO Ëá™ÂãïÁîüÊàê */
     GenericListener mainViewListener = new GenericListener() {
         @SuppressWarnings("unchecked")
         public void eventHappened(GenericEvent ev) {
@@ -144,7 +144,7 @@ class View {
             } else if ("redisplayExpandedBefore".equals(name)) {
                 redisplayExpandedBefore();
             } else if ("redisplayOutlineAfter".equals(name)) {
-                redisplayOutlineAfter((DefaultListModel) ev.getArguments()[0], (Pair) ev.getArguments()[1]);
+                redisplayOutlineAfter((DefaultListModel<Object>) ev.getArguments()[0], (Pair) ev.getArguments()[1]);
             } else if ("redisplayOutlineBefore".equals(name)) {
                 redisplayOutlineBefore((String) ev.getArguments()[0], (String) ev.getArguments()[1]);
             } else if ("pageMain".equals(name)) {
@@ -161,7 +161,7 @@ class View {
 
     /** */
     void updateMain(List<Line> listModel) {
-        DefaultListModel viewListModel = new DefaultListModel();
+        DefaultListModel<Object> viewListModel = new DefaultListModel<>();
         for (Line line : listModel) {
             viewListModel.addElement(line);
         }
@@ -182,7 +182,7 @@ class View {
      * TODO 
      * set the diff display widget into outline mode
      */
-    void redisplayOutlineAfter(ListModel listModel, Pair current) {
+    void redisplayOutlineAfter(ListModel<Object> listModel, Pair current) {
         mainView.setModel(listModel);
         mainView.setSelectedValue(current, true);
 
@@ -212,14 +212,14 @@ class View {
 
     /** */
     void displayException(Exception e) {
-        DefaultListModel model = new DefaultListModel();
+        DefaultListModel<Object> model = new DefaultListModel<>();
         model.addElement(new Line(0, e.toString(), Line.Type.PLAIN));
         mainView.setModel(model);
     }
 
     /** */
     void displaySingleFile(String[] lines) {
-        DefaultListModel model = new DefaultListModel();
+        DefaultListModel<Object> model = new DefaultListModel<>();
         for (int i = 0; i < lines.length; i++) {
             model.addElement(new Line(i, lines[i], Line.Type.PLAIN));
         }
@@ -482,7 +482,7 @@ Debug.println(mainView.getSelectedIndex());
      * initialize what to include in the list according to current prefs
      */
     void pageSaveListDialog() {
-        // TODO model Ç©ÇÁéÊÇÈÇ◊Ç´Ç©ÅH
+        // TODO model „Åã„ÇâÂèñ„Çã„Åπ„Åç„ÅãÔºü
         hasIdentical.setSelected(showIdentical.isSelected());
         hasDifferent.setSelected(showDifferent.isSelected());
         hasLeft.setSelected(showLeft.isSelected());
@@ -649,7 +649,7 @@ Debug.println(mainView.getSelectedIndex());
             int first = -1;
 // Debug.println("----");
             while (i < mainView.getModel().getSize()) {
-                // TODO Ç©Ç¡Ç±à´Ç¢
+                // TODO „Åã„Å£„ÅìÊÇ™„ÅÑ
                 if (!(mainView.getModel().getElementAt(0) instanceof Line)) {
                     return;
                 }
@@ -843,7 +843,7 @@ Debug.println(mainView.getSelectedIndex());
 //      panel.setBackground(Color.cyan);
         base.add(panel, BorderLayout.NORTH);
 
-        mainView = new JList();
+        mainView = new JList<>();
         mainView.setFont(new Font(rb.getString("panel.jWinDiff.font.name"), Font.PLAIN, 12));
 
         sp = new JScrollPane();
@@ -1318,7 +1318,7 @@ Debug.println(mainView.getSelectedIndex());
             } else {
                 index = mainView.getSelectedIndex();
             }
-            ListModel model = mainView.getModel();
+            ListModel<Object> model = mainView.getModel();
             while (index++ < model.getSize() - 1) {
                 Pair.Type diff = ((Pair) model.getElementAt(index)).getDiff();
                 if (diff.isDifferent()) {
@@ -1328,7 +1328,7 @@ Debug.println(mainView.getSelectedIndex());
                 }
             }
         } else {
-            ListModel model = mainView.getModel();
+            ListModel<Object> model = mainView.getModel();
             int index;
             if (mainView.isSelectionEmpty()) {
                 index = model.getSize();
@@ -1358,7 +1358,7 @@ Debug.println(mainView.getSelectedIndex());
             } else {
                 index = mainView.getSelectedIndex();
             }
-            ListModel model = mainView.getModel();
+            ListModel<Object> model = mainView.getModel();
             while (index++ < model.getSize() - 1) {
                 if (((Line) model.getElementAt(index)).getFlag() == Line.Type.PLAIN) {
                     break;
@@ -1373,7 +1373,7 @@ Debug.println(mainView.getSelectedIndex());
                 index++;
             }
         } else {
-            ListModel model = mainView.getModel();
+            ListModel<Object> model = mainView.getModel();
             int index;
             if (mainView.isSelectionEmpty()) {
                 index = model.getSize();

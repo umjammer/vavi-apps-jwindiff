@@ -67,16 +67,16 @@ class Model {
     DisplayMode displayMode = DisplayMode.OUTLINE_MODE;
 
     /** The list of files to be compared. */
-    List<Pair> pairs = new ArrayList<Pair>();
+    List<Pair> pairs = new ArrayList<>();
 
     /** The currently selected pair. */
     Pair current;
 
     /** */
-    private List<File> leftFiles  = new ArrayList<File>();
-    
+    private List<File> leftFiles  = new ArrayList<>();
+
     /** */
-    private List<File> rightFiles = new ArrayList<File>();
+    private List<File> rightFiles = new ArrayList<>();
 
     /** dirs (true) or files (false) */
     boolean multiMode;
@@ -113,7 +113,7 @@ class Model {
     boolean showRight;
 
     /**
-     * Gets a canonical path of the first elenent of files.
+     * Gets a canonical path of the first element of files.
      */
     private static String getPath(List<File> files) {
         return files.get(0).getPath();
@@ -142,42 +142,42 @@ class Model {
     public List<File> getRightFiles() {
         return rightFiles;
     }
-    
+
     /**
      * dirs or files
      */
     public boolean isMultiMode() {
         return multiMode;
     }
-    
+
     /**
      * dirs or files
      */
     public void setMultiMode(boolean multiMode) {
         this.multiMode = multiMode;
     }
-    
+
     /**
      * expand
      */
     public ShowExpandMode getShowExpandMode() {
         return showExpandMode;
     }
-    
+
     /**
      * expand
      */
     public void setShowExpandMode(ShowExpandMode showExpandMode) {
         this.showExpandMode = showExpandMode;
     }
-    
+
     /**
      * expand
      */
     public ShowNumMode getShowNumMode() {
         return showNumMode;
     }
-    
+
     /**
      * expand
      */
@@ -191,84 +191,84 @@ class Model {
     public boolean isHideMarked() {
         return hideMarked;
     }
-    
+
     /**
      * mark
      */
     public void setHideMarked(boolean hideMarked) {
         this.hideMarked = hideMarked;
     }
-    
+
     /**
      * option
      */
     public boolean isIgnoreBlanks() {
         return ignoreBlanks;
     }
-    
+
     /**
      * option
      */
     public void setIgnoreBlanks(boolean ignoreBlanks) {
         this.ignoreBlanks = ignoreBlanks;
     }
-    
+
     /**
      * option
      */
     public boolean isShowDifferent() {
         return showDifferent;
     }
-    
+
     /**
      * option
      */
     public void setShowDifferent(boolean showDifferent) {
         this.showDifferent = showDifferent;
     }
-    
+
     /**
      * option
      */
     public boolean isShowIdentical() {
         return showIdentical;
     }
-    
+
     /**
      * option
      */
     public void setShowIdentical(boolean showIdentical) {
         this.showIdentical = showIdentical;
     }
-    
+
     /**
      * option
      */
     public boolean isShowLeft() {
         return showLeft;
     }
-    
+
     /**
      * option
      */
     public void setShowLeft(boolean showLeft) {
         this.showLeft = showLeft;
     }
-    
+
     /**
      * option
      */
     public boolean isShowRight() {
         return showRight;
     }
-    
+
     /**
      * option
      */
     public void setShowRight(boolean showRight) {
         this.showRight = showRight;
     }
-    
+
     //----
 
     /**
@@ -282,29 +282,30 @@ class Model {
     }
 
     /**
-     * Perform the processing. Called at start of day and when the targets change.
+     * Perform the processing. Called at start of day and when the targets
+     * change.
      */
     void updateTargets() {
         if (leftFiles.size() == 0 || rightFiles.size() == 0) {
             displayMode = DisplayMode.NONE_MODE;
             return;
         }
-    
+
         // Figure out which mode we should start in
-    
+
         File left = leftFiles.get(0);
         File right = rightFiles.get(0);
-    
+
         if (!right.isDirectory() && !left.isDirectory()) {
             multiMode = false;
         } else {
             multiMode = true;
         }
-    
+
         displayMode = multiMode ? DisplayMode.OUTLINE_MODE : DisplayMode.EXPANDED_MODE;
-    
+
         // Get rid of any pre-existing list of files.
-    
+
 // Debug.println(isMultiMode);
         if (multiMode) {
             makePairs(left, right);
@@ -331,12 +332,12 @@ Debug.println(pair.getCommonName());
      * @param rdir same as the left.
      */
     void makePairs(File ldir, File rdir) {
-    
-        List<File> lfiles = new ArrayList<File>();
-        List<File> rfiles = new ArrayList<File>();
+
+        List<File> lfiles = new ArrayList<>();
+        List<File> rfiles = new ArrayList<>();
         fillFileList(ldir, lfiles);
         fillFileList(rdir, rfiles);
-    
+
         makePairs(lfiles, rfiles);
     }
 
@@ -348,7 +349,7 @@ Debug.println(pair.getCommonName());
      */
     void makePairs(List<File> lfiles, List<File> rfiles) {
         pairs.clear();
-    
+
         for (int i = 0; i < lfiles.size(); i++) {
             File lfile = lfiles.get(i);
             File rfile = findIn(rfiles, lfile);
@@ -359,12 +360,12 @@ Debug.println(pair.getCommonName());
                 pairs.add(new Pair(getLeftFilePath(), lfile, getRightFilePath(), null));
             }
         }
-    
+
         for (int i = 0; i < rfiles.size(); i++) {
             File rfile = rfiles.get(i);
             pairs.add(new Pair(getLeftFilePath(), null, getRightFilePath(), rfile));
         }
-    
+
         Collections.sort(pairs, new Comparator<Pair>() {
             public int compare(Pair o1, Pair o2) {
                 String first = o1.getCommonName();
@@ -584,7 +585,7 @@ Debug.println(pair.getCommonName());
     String editor = System.getProperty("EDITOR");
 
     /** The configuration properties */
-    List<String> patterns = new ArrayList<String>();
+    List<String> patterns = new ArrayList<>();
 
     private static final String PROP_EDITOR = "editor";
     private static final String PROP_EXPAND = "expand";

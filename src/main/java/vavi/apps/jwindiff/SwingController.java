@@ -15,6 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -27,16 +28,16 @@ import vavi.apps.jwindiff.Controller.Order;
 
 /**
  * SwingController.
- * TODO ©“®¶¬A‚Å‚à‚Å‚«‚È‚¢‚Æ‚±‚à‚ ‚é‚¼HHH
+ * TODO è‡ªå‹•ç”Ÿæˆã€ã§ã‚‚ã§ããªã„ã¨ã“ã‚‚ã‚ã‚‹ãï¼Ÿï¼Ÿï¼Ÿ
  * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
  * @version 0.00 060508 nsano initial version <br>
  */
 class SwingController {
 
-    /** Swing ‚ª Controller ‚ğŒ“‚Ë‚Ä‚¢‚éˆ×‚»‚ê‚ğƒoƒCƒ“ƒh‚·‚é—p */
+    /** Swing ãŒ Controller ã‚’å…¼ã­ã¦ã„ã‚‹ç‚ºãã‚Œã‚’ãƒã‚¤ãƒ³ãƒ‰ã™ã‚‹ç”¨ */
     private Controller controller;
 
-    /** Swing ‚Åì‚ç‚ê‚½ View */
+    /** Swing ã§ä½œã‚‰ã‚ŒãŸ View */
     private View view;
 
     /** */
@@ -242,13 +243,11 @@ class SwingController {
      */
     ActionListener rescanAction = new ActionListener() {
         public void actionPerformed(ActionEvent ev) {
-            Object[] selection = view.mainView.getSelectedValues();
-            if (selection.length == 0 || !(selection[0] instanceof Pair)) {
+            List<Object> selection = view.mainView.getSelectedValuesList();
+            if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
                 return;
             }
-            Pair[] pairs = new Pair[selection.length];
-            System.arraycopy(selection, 0, pairs, 0, selection.length);
-
+            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
             controller.rescan(pairs);
         }
     };
@@ -330,13 +329,11 @@ class SwingController {
      */
     ActionListener markFileAction = new ActionListener() {
         public void actionPerformed(ActionEvent ev) {
-            Object[] selection = view.mainView.getSelectedValues();
-            if (selection.length == 0 || !(selection[0] instanceof Pair)) {
+            List<Object> selection = view.mainView.getSelectedValuesList();
+            if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
                 return;
             }
-            Pair[] pairs = new Pair[selection.length];
-            System.arraycopy(selection, 0, pairs, 0, selection.length);
-
+            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
             controller.toggleSelectedMark(pairs);
         }
     };
