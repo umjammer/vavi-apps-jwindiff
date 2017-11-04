@@ -126,7 +126,7 @@ class Printer extends DiffUtil.BasicPrinter {
     public void print(Diff.Change script) {
 
         // Target is mainView, not #out
-        listModel = new ArrayList<Line>();
+        listModel = new ArrayList<>();
         inserted = 0;
 
         if (model.getShowExpandMode().equals(ShowExpandMode.left) || model.getShowNumMode().equals(ShowNumMode.left)) {

@@ -15,6 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -27,16 +28,16 @@ import vavi.apps.jwindiff.Controller.Order;
 
 /**
  * SwingController.
- * TODO é©ìÆê∂ê¨ÅAÇ≈Ç‡Ç≈Ç´Ç»Ç¢Ç∆Ç±Ç‡Ç†ÇÈÇºÅHÅHÅH
+ * TODO Ëá™ÂãïÁîüÊàê„ÄÅ„Åß„ÇÇ„Åß„Åç„Å™„ÅÑ„Å®„Åì„ÇÇ„ÅÇ„Çã„ÅûÔºüÔºüÔºü
  * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
  * @version 0.00 060508 nsano initial version <br>
  */
 class SwingController {
 
-    /** Swing Ç™ Controller ÇåìÇÀÇƒÇ¢ÇÈà◊ÇªÇÍÇÉoÉCÉìÉhÇ∑ÇÈóp */
+    /** Swing „Åå Controller „ÇíÂÖº„Å≠„Å¶„ÅÑ„ÇãÁÇ∫„Åù„Çå„Çí„Éê„Ç§„É≥„Éâ„Åô„ÇãÁî® */
     private Controller controller;
 
-    /** Swing Ç≈çÏÇÁÇÍÇΩ View */
+    /** Swing „Åß‰Ωú„Çâ„Çå„Åü View */
     private View view;
 
     /** */
@@ -97,22 +98,13 @@ class SwingController {
         view.exitMenuItem.addActionListener(exitAction);
         view.editLeftMenuItem.addActionListener(editLeftAction);
         view.editRightMenuItem.addActionListener(editRightAction);
-        view.editLeftMenuItem2.addActionListener(editLeftAction);
-        view.editRightMenuItem2.addActionListener(editRightAction);
-        view.editLeftMenuItem3.addActionListener(editLeftAction);
-        view.editRightMenuItem3.addActionListener(editRightAction);
         view.setEditorMenuItem.addActionListener(setEditorAction);
+        view.copyFilesMenuItem.addActionListener(copyFilesAction);
         view.viewOutline.addActionListener(outlineAction);
         view.viewExpand.addActionListener(expandAction);
         view.prevMenuItem.addActionListener(prevAction);
         view.nextMenuItem.addActionListener(nextAction);
         view.rescanMenuItem.addActionListener(rescanAction);
-        view.prevMenuItem2.addActionListener(prevAction);
-        view.nextMenuItem2.addActionListener(nextAction);
-        view.rescanMenuItem2.addActionListener(rescanAction);
-        view.prevMenuItem3.addActionListener(prevAction);
-        view.nextMenuItem3.addActionListener(nextAction);
-        view.rescanMenuItem3.addActionListener(rescanAction);
         view.showLeftOnly.addActionListener(setShowExpandModeAction);
         view.showRightOnly.addActionListener(setShowExpandModeAction);
         view.showBoth.addActionListener(setShowExpandModeAction);
@@ -202,6 +194,20 @@ class SwingController {
     };
 
     /**
+     * copyFiles
+     */
+    ActionListener copyFilesAction = new ActionListener() {
+        public void actionPerformed(ActionEvent ev) {
+            List<Object> selection = view.mainView.getSelectedValuesList();
+            if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
+                return;
+            }
+            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+            controller.copyFiles(pairs);
+        }
+    };
+
+    /**
      * outline
      */
     ActionListener outlineAction = new ActionListener() {
@@ -242,13 +248,11 @@ class SwingController {
      */
     ActionListener rescanAction = new ActionListener() {
         public void actionPerformed(ActionEvent ev) {
-            Object[] selection = view.mainView.getSelectedValues();
-            if (selection.length == 0 || !(selection[0] instanceof Pair)) {
+            List<Object> selection = view.mainView.getSelectedValuesList();
+            if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
                 return;
             }
-            Pair[] pairs = new Pair[selection.length];
-            System.arraycopy(selection, 0, pairs, 0, selection.length);
-
+            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
             controller.rescan(pairs);
         }
     };
@@ -330,13 +334,11 @@ class SwingController {
      */
     ActionListener markFileAction = new ActionListener() {
         public void actionPerformed(ActionEvent ev) {
-            Object[] selection = view.mainView.getSelectedValues();
-            if (selection.length == 0 || !(selection[0] instanceof Pair)) {
+            List<Object> selection = view.mainView.getSelectedValuesList();
+            if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
                 return;
             }
-            Pair[] pairs = new Pair[selection.length];
-            System.arraycopy(selection, 0, pairs, 0, selection.length);
-
+            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
             controller.toggleSelectedMark(pairs);
         }
     };

@@ -40,7 +40,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** */
-    public Component getListCellRendererComponent(JList list,
+    public Component getListCellRendererComponent(JList<?> list,
                                                   Object value,
                                                   int index,
                                                   boolean isSelected,
@@ -60,7 +60,10 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         return c;
     }
 
-    /** TODO Š¿š“™‚Ì•¶š•‚É‘Î‰‚µ‚Ä‚¢‚È‚¢ */
+    /** */
+    private static final int MERGIN = 80;
+
+    /** TODO æ¼¢å­—ç­‰ã®æ–‡å­—å¹…ã«å¯¾å¿œã—ã¦ã„ãªã„ */
     private void setPair(Pair pair, int index) {
 
         if (pair.getDiff().isDifferent()) {
@@ -76,9 +79,9 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
             s += toInt5(index + 1) + "    ";
         }
         if (model.isMultiMode()) {
-            s += toStringN(pair.getCommonName(), 30) + "  " + getDescription(pair);
+            s += toStringN(pair.getCommonName(), MERGIN) + "  " + getDescription(pair);
         } else {
-            s += toStringN(pair.getLeft() + " : " + pair.getRight(), 30) + "  " + getDescription(pair);
+            s += toStringN(pair.getLeft() + " : " + pair.getRight(), MERGIN) + "  " + getDescription(pair);
         }
         setText(s);
     }
@@ -174,7 +177,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         return sb.toString();
     }
 
-    /** TODO Š¿š“™‚Ì•¶š•‚É‘Î‰‚µ‚Ä‚¢‚È‚¢ */
+    /** TODO æ¼¢å­—ç­‰ã®æ–‡å­—å¹…ã«å¯¾å¿œã—ã¦ã„ãªã„ */
     private final String replaceTabToSpace(String s) {
         int p = 0;
         while (true) {

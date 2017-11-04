@@ -5,8 +5,8 @@
 #
 # Message resources for Java version of windiff.
 #
-# @author	<a href=mailto:vavivavi@geocities.co.jp>Vavi</a>
-# @version	0.00	020428	vavi	initial version <br>
+# @author <a href=mailto:vavivavi@geocities.co.jp>Vavi</a>
+# @version 0.00 020428 vavi initial version <br>
 #
 
 pair.description.only={0} にのみ存在
@@ -101,7 +101,7 @@ dialog.pattern.title=サブストリングまたは正規表現を入力してください
 dialog.common.button.ok.text=OK
 dialog.common.button.cancel.text=キャンセル
 
-filelist.header=-- {0} : {1} -- 
+filelist.header=-- {0} : {1} --
 filelist.message.0=同一
 filelist.message.1=差異あり
 filelist.message.2=左のみ

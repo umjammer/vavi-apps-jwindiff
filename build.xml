@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="Shift_JIS"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <!-- ////////////////////////////////////////////////////////////////////// -->
 <!-- Copyright (c) 2002 by Naohide Sano, All rights reserved.               -->
@@ -7,104 +7,49 @@
 <!--                                                                        -->
 <!-- JWinDiff                                                               -->
 <!--                                                                        -->
-<!-- @author	Naohide Sano                                                -->
-<!-- @version	0.00	020519	nsano	initial version                     -->
+<!-- @author Naohide Sano                                                   -->
+<!-- @version 0.00 020519 nsano initial version                             -->
 <!--                                                                        -->
 <!-- ////////////////////////////////////////////////////////////////////// -->
 
-<project default="go" basedir=".">
+<project name="vavi-apps-jwindiff" default="run" basedir="."
+  xmlns:artifact="urn:maven-artifact-ant">
 
-  <!-- プロパティの定義 -->
+  <path id="maven-ant-tasks.classpath">
+    <fileset dir="${user.home}/lib/java/maven-ant-tasks">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+  <typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+           uri="urn:maven-artifact-ant"
+           classpathref="maven-ant-tasks.classpath" />
+
+  <property environment="env" />
   <property file="local.properties" />
 
-  <property name="dir.src" value="src" />
-  <property name="dir.build" value="build" />
+  <xmlproperty file="pom.xml" />
 
-  <!-- クラスパスの定義 -->
+  <!-- Path Definitions -->
   <path id="project.class.path">
-    <pathelement location="${dir.build}" />
-    <pathelement location="${dir.vavi}" />
+    <pathelement location="${javac.dest.test}" />
+    <pathelement location="${javac.dest}" />
+    <fileset refid="maven-ant-tasks.dependency.fileset" />
   </path>
 
-  <!-- ターゲットの定義 -->
-
-  <!-- clean -->
-  <target name="clean" description="ビルド環境のクリア">
-    <delete file="JWinDiff.jar" />
-    <delete dir="${dir.build}" />
+  <!-- prepare -->
+  <target name="prepare" description="Preparing">
+    <artifact:pom file="pom.xml" id="maven.project" />
+    <artifact:dependencies fileSetId="maven-ant-tasks.dependency.fileset">
+      <pom refid="maven.project" />
+    </artifact:dependencies>
+    <artifact:mvn pom="pom.xml">
+      <arg value="package"/>
+      <arg value="-Dmaven.test.skip=true"/>
+    </artifact:mvn>
   </target>
 
-  <!-- resource -->
-  <target name="resource" description="リソース生成">
-    <native2ascii encoding="Windows-31J"
-                  src="etc"
-                  dest="${dir.build}"
-		  includes="**/*.properties.sjis"
-		  ext=""/>
-    <copy todir="${dir.build}" preservelastmodified="true">
-      <fileset dir="etc">
-        <include name="*.png" />
-        <include name="**/*.properties" />
-      </fileset>
-      <fileset dir="${dir.vavi}">
-        <include name="vavi/swing/resource*.properties" />
-        <include name="vavi/util/logging/*.properties" />
-      </fileset>
-    </copy>
-  </target>
-
-  <!-- javac -->
-  <target name="compile.support" depends="" description="コンパイル support">
-    <javac debug="on"
-           encoding="Windows-31J"
-           destdir="${dir.build}">
-      <classpath refid="project.class.path" />
-      <include name="vavi/swing/JFileChooserHistoryComboBox.java" />
-      <include name="vavi/swing/JHistoryComboBox.java" />
-      <include name="vavi/util/Debug.java" />
-      <include name="vavi/util/gnu/*.java" />
-      <include name="vavi/util/sort/*.java" />
-      <src path="${dir.vavi}" />
-    </javac>
-  </target>
-
-  <!-- javac -->
-  <target name="compile" depends="resource,compile.support"
-          description="コンパイル">
-    <javac debug="on"
-           encoding="Windows-31J"
-           destdir="${dir.build}">
-      <classpath refid="project.class.path" />
-      <include name="**/*.java" />
-      <src path="${dir.src}" />
-    </javac>
-  </target>
-
-  <!-- jar -->
-  <target name="packaging" depends="compile" description="パッケージング">
-    <jar jarfile="JWinDiff.jar" manifest="etc/manifest.mf">
-      <fileset dir="${dir.build}" />
-      <fileset dir="${dir.vavi}">
-        <include name="vavi/awt/dnd/*.class" />
-        <include name="vavi/swing/JFileChooserHistoryComboBox*.class" />
-        <include name="vavi/swing/JFileChooserField*.class" />
-        <include name="vavi/swing/Editable*.class" />
-        <include name="vavi/swing/JEditorPopupMenu*.class" />
-        <include name="vavi/swing/JHistoryComboBox*.class" />
-        <include name="vavi/swing/resource*.properties" />
-        <include name="vavi/util/StringUtil.class" />
-        <include name="vavi/util/*.properties" />
-        <include name="vavi/util/Debug*.class" />
-        <include name="vavi/util/gnu/*.class" />
-        <include name="vavi/util/event/*.class" />
-        <include name="vavi/util/logging/*.class" />
-        <include name="vavi/util/logging/*.properties" />
-      </fileset>
-    </jar>
-  </target>
-
-  <!-- run -->
-  <target name="run" depends="packaging" description="プログラムの実行">
+  <!-- go -->
+  <target name="go" depends="prepare" description="繝励Ο繧ｰ繝ｩ繝縺ｮ螳溯｡�">
     <java classname="vavi.apps.jwindiff.JWinDiff" fork="yes">
       <classpath>
         <pathelement location="JWinDiff.jar" />
@@ -114,57 +59,26 @@
     </java>
   </target>
 
-  <!-- go -->
-  <target name="go" depends="compile" description="プログラムの実行">
+  <!-- run -->
+  <target name="run" depends="prepare" description="繝励Ο繧ｰ繝ｩ繝縺ｮ螳溯｡�">
     <java classname="vavi.apps.jwindiff.JWinDiff" fork="yes">
-      <!-- jvmarg value="-Xprof" / --> 
-      <jvmarg value="-Xmx128m" /> 
-<!--
-      <jvmarg value="-Duser.home=${user.home}" /> 
+      <!-- jvmarg value="-Xprof" / -->
+      <jvmarg value="-Xmx1024m" />
+      <jvmarg value="-Dfile.encoding=${project.build.plugins.plugin.configuration.encoding}" />
       <jvmarg value="-Dswing.plaf.metal.controlFont=Dialog-12" />
+      <!--
+      <jvmarg value="-Duser.home=${user.home}" /> 
 -->
-      <classpath refid="project.class.path" />
+      <classpath>
+        <path refid="project.class.path" />
+      </classpath>
       <arg path="${dir.1}" />
       <arg path="${dir.2}" />
-<!--
+      <!--
       <arg value="JWinDiff.java~" />
       <arg value="JWinDiff.java" />
 -->
     </java>
-  </target>
-
-  <!-- install -->
-  <target name="install" depends="packaging" description="Install">
-    <move file="jwindiff.jar" todir="${user.home}/lib/java" />
-  </target>
-
-  <!-- jar -->
-  <target name="backup" description="バックアップ">
-    <tstamp>
-      <format property="today.jp" pattern="yyMMdd"/>
-    </tstamp>
-    <zip zipfile="jwindiff${today.jp}.zip">
-      <fileset dir=".">
-        <include name="build.xml" />
-        <include name="src/**/*" />
-        <include name="etc/**/*" />
-      </fileset>
-      <fileset dir="../..">
-        <include name="vavi/awt/dnd/*.java" />
-        <include name="vavi/swing/JFileChooserHistoryComboBox*.java" />
-        <include name="vavi/swing/JFileChooserField*.java" />
-        <include name="vavi/swing/Editable*.java" />
-        <include name="vavi/swing/JEditorPopupMenu*.java" />
-        <include name="vavi/swing/JHistoryComboBox*.java" />
-        <include name="vavi/swing/resource*.properties" />
-        <include name="vavi/util/StringUtil.java" />
-        <include name="vavi/util/*.properties" />
-        <include name="vavi/util/Debug*.java" />
-        <include name="vavi/util/gnu/*.java" />
-        <include name="vavi/util/logging/*.java" />
-        <include name="vavi/util/logging/*.properties" />
-      </fileset>
-    </zip>
   </target>
 
 </project>
