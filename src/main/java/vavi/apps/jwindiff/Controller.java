@@ -13,6 +13,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -142,7 +145,7 @@ Debug.println("here3");
                     form.setPaths(model.getLeftFilePath() + " : " + model.getRightFilePath());
                 }
                 model.current.slowDiff(model.isIgnoreBlanks());
-model.current.debug();
+Debug.print(model.current);
                 Printer printer = new Printer(model);
                 printer.print(model.current.script);
                 model.viewUpdated(this, "updateMain", printer.getResult());
@@ -201,7 +204,7 @@ Debug.println(Level.SEVERE, e);
         }
         if (!model.current.isVisible(model.isShowIdentical(), model.isShowLeft(), model.isShowRight(), model.isShowDifferent(), model.isHideMarked())) {
 Debug.println("here");
-model.current.debug();
+Debug.print(model.current);
             form.toOutline();
             return;
         }
@@ -261,7 +264,7 @@ Debug.println(Level.SEVERE, e);
      * @controller
      */
     void addPatternHistory(String value) {
-        value = value == null ? "" : String.valueOf(value);
+        value = value == null ? "" : value;
         model.patterns.add(value);
     }
 
@@ -395,6 +398,7 @@ Debug.println(e);
      */
     void markRegex(String regex) {
         model.markRegex(regex);
+        addPatternHistory(regex);
         updateOutline();
     }
 
@@ -451,18 +455,22 @@ Debug.println("file: " + file);
                         model.getLeftFiles().add(file);
 Debug.println(i + ": add left: " + file);
                     } else if (i == 1) {
-                        File left = model.getLeftFiles().get(0);
-                        if (left.isDirectory() && file.isDirectory()) {
-                            file = new File(file.getCanonicalPath());
-                            model.getRightFiles().add(file);
+                        if (model.getLeftFiles().size() > 0) {
+                            File left = model.getLeftFiles().get(0);
+                            if (left.isDirectory() && file.isDirectory()) {
+                                file = new File(file.getCanonicalPath());
+                                model.getRightFiles().add(file);
 Debug.println(i + ": add right as directory: " + file);
-                        } else if (!left.isDirectory() && !file.isDirectory()) {
-                            file = new File(file.getCanonicalPath());
-                            model.getRightFiles().add(file);
+                            } else if (!left.isDirectory() && !file.isDirectory()) {
+                                file = new File(file.getCanonicalPath());
+                                model.getRightFiles().add(file);
 Debug.println(i + ": add right as file: " + file);
+                            } else {
+                                String s = MessageFormat.format(rb.getString("message.error"), left, file);
+                                throw new IllegalArgumentException(s);
+                            }
                         } else {
-                            String s = MessageFormat.format(rb.getString("message.error"), left, file);
-                            throw new IllegalArgumentException(s);
+                            throw new IllegalArgumentException("no left files");
                         }
                     } else {
 Debug.println(i + ":???: " + file);
@@ -585,6 +593,42 @@ Debug.println(i + ":ignore: " + file);
         } catch (Exception e) {
 Debug.printStackTrace(e);
         }
+    }
+
+    void copyFiles(Pair[] pairs) {
+        for (Pair pair : pairs) {
+Debug.print(pair);
+            if (pair.getLeft() == null || !pair.getLeft().exists()) {
+                try {
+                    Path file = Paths.get(pair.leftFilePath, pair.getCommonName());
+                    Path dir = file.getParent();
+                    if (!Files.exists(dir)) {
+                        Files.createDirectories(dir);
+                    }
+                    Files.copy(Paths.get(pair.getRight().toURI()), file);
+                    pair.setLeft(file.toFile());
+                    pair.rescan();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (pair.getRight() == null || !pair.getRight().exists()) {
+                try {
+                    Path file = Paths.get(pair.rightFilePath, pair.getCommonName());
+                    Path dir = file.getParent();
+                    if (!Files.exists(dir)) {
+                        Files.createDirectories(dir);
+                    }
+                    Files.copy(Paths.get(pair.getLeft().toURI()), file);
+                    pair.setRight(file.toFile());
+                    pair.rescan();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+Debug.println("both files do not exist: " + pair.getCommonName());
+            }
+        }
+        updateOutline();
     }
 
     /** */

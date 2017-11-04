@@ -285,13 +285,15 @@ Debug.println(Level.SEVERE, e);
     }
 
     /** for debug */
-    void debug() {
-        System.err.println("---- " + this + " ----");
-        System.err.println("left:\t" + left);
-        System.err.println("right:\t" + right);
-        System.err.println("diff:\t" + diff);
-        System.err.println("marked:\t" + marked);
-        System.err.println("script:\t" + script);
+    public String toString() {
+        return "left: " + left +
+                ", lbase: " + leftFilePath +
+                ", right: " + right +
+                ", rbase: " + rightFilePath +
+                ", diff: " + diff +
+                ", marked: " + marked +
+                ", script: " + script +
+                ", commond: " + getCommonName();
     }
 }
 

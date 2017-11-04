@@ -179,7 +179,7 @@ class View {
     }
 
     /**
-     * TODO 
+     * TODO
      * set the diff display widget into outline mode
      */
     void redisplayOutlineAfter(ListModel<Object> listModel, Pair current) {
@@ -488,7 +488,7 @@ Debug.println(mainView.getSelectedIndex());
         hasLeft.setSelected(showLeft.isSelected());
         hasRight.setSelected(showRight.isSelected());
         hasNotMarked.setSelected(hideMarked.isSelected());
-    
+
         saveListDialog.setLocationRelativeTo(top);
         saveListDialog.setVisible(true);
     }
@@ -790,27 +790,8 @@ Debug.println(mainView.getSelectedIndex());
     JMenuItem outlineMenuItem;
 
     /** */
-    JMenuItem prevMenuItem2;
-    /** */
-    JMenuItem nextMenuItem2;
-    /** */
-    JMenuItem rescanMenuItem2;
-    /** */
-    JMenuItem editLeftMenuItem2;
-    /** */
-    JMenuItem editRightMenuItem2;
+    JMenuItem copyFilesMenuItem;
 
-    /** */
-    JMenuItem prevMenuItem3;
-    /** */
-    JMenuItem nextMenuItem3;
-    /** */
-    JMenuItem rescanMenuItem3;
-    /** */
-    JMenuItem editLeftMenuItem3;
-    /** */
-    JMenuItem editRightMenuItem3;
-    
     /**
      * Build the widget structure of the main window
      */
@@ -879,13 +860,12 @@ Debug.println(mainView.getSelectedIndex());
         saveFilelistMenuItem.setMnemonic(KeyEvent.VK_S);
         menu.add(saveFilelistMenuItem);
 
-        JMenuItem menuItem = new JMenuItem();
-        menuItem.setText(rb.getString("menuItem.copyFiles.text"));
-        menuItem.setMnemonic(KeyEvent.VK_C);
-        menuItem.setEnabled(false);
-        menu.add(menuItem);
+        copyFilesMenuItem = new JMenuItem();
+        copyFilesMenuItem.setText(rb.getString("menuItem.copyFiles.text"));
+        copyFilesMenuItem.setMnemonic(KeyEvent.VK_C);
+        menu.add(copyFilesMenuItem);
 
-        menuItem = new JMenuItem();
+        JMenuItem menuItem = new JMenuItem();
         menuItem.setText(rb.getString("menuItem.print.text"));
         menuItem.setMnemonic(KeyEvent.VK_P);
         menuItem.setEnabled(false);
@@ -999,7 +979,6 @@ Debug.println(mainView.getSelectedIndex());
         showBoth.setText(rb.getString("menuItem.bothFiles.text"));
         showBoth.setMnemonic(KeyEvent.VK_O); // M-b
         showBoth.setActionCommand(ShowExpandMode.both.name());
-        showBoth.setSelected(true);
         menu.add(showBoth);
         bg.add(showBoth);
 
@@ -1025,7 +1004,6 @@ Debug.println(mainView.getSelectedIndex());
         hideNums.setText(rb.getString("menuItem.noLineNumbers.text"));
         hideNums.setMnemonic(KeyEvent.VK_N);
         hideNums.setActionCommand(ShowNumMode.none.name());
-        hideNums.setSelected(true);
         menu.add(hideNums);
         bg.add(hideNums);
 
@@ -1038,7 +1016,6 @@ Debug.println(mainView.getSelectedIndex());
         ignoreBlanks = new JCheckBoxMenuItem();
         ignoreBlanks.setText(rb.getString("menuItem.ignoreBlanks.text"));
         ignoreBlanks.setMnemonic(KeyEvent.VK_B);
-        ignoreBlanks.setSelected(true);
         menu.add(ignoreBlanks);
 
         menu.addSeparator();
@@ -1053,25 +1030,21 @@ Debug.println(mainView.getSelectedIndex());
         showIdentical = new JCheckBoxMenuItem();
         showIdentical.setText(rb.getString("menuItem.showIdenticalFiles.text"));
         showIdentical.setMnemonic(KeyEvent.VK_I);
-        showIdentical.setSelected(true);
         menu.add(showIdentical);
 
         showLeft = new JCheckBoxMenuItem();
         showLeft.setText(rb.getString("menuItem.showLeftOnlyFiles.text"));
         showLeft.setMnemonic(KeyEvent.VK_L);
-        showLeft.setSelected(true);
         menu.add(showLeft);
 
         showRight = new JCheckBoxMenuItem();
         showRight.setText(rb.getString("menuItem.showRightOnlyFiles.text"));
         showRight.setMnemonic(KeyEvent.VK_R);
-        showRight.setSelected(true);
         menu.add(showRight);
 
         showDifferent = new JCheckBoxMenuItem();
         showDifferent.setText(rb.getString("menuItem.showDifferentFiles.text"));
         showDifferent.setMnemonic(KeyEvent.VK_D);
-        showDifferent.setSelected(true);
         menu.add(showDifferent);
 
         menuBar.add(menu);
@@ -1134,43 +1107,29 @@ Debug.println(mainView.getSelectedIndex());
 
         popupOutline.addSeparator();
 
-        nextMenuItem2 = new JMenuItem();
-        nextMenuItem2.setText(rb.getString("menuItem.nextChange.text"));
-        nextMenuItem2.setMnemonic(KeyEvent.VK_N); // F8
-        popupOutline.add(nextMenuItem2);
+        popupOutline.add(nextMenuItem);
 
-        prevMenuItem2 = new JMenuItem();
-        prevMenuItem2.setText(rb.getString("menuItem.previousChange.text"));
-        prevMenuItem2.setMnemonic(KeyEvent.VK_P); // F7
-        popupOutline.add(prevMenuItem2);
+        popupOutline.add(prevMenuItem);
 
         expandMenuItem = new JMenuItem();
         expandMenuItem.setText(rb.getString("button.changeMode.text.expand"));
         expandMenuItem.setMnemonic(KeyEvent.VK_E);
         popupOutline.add(expandMenuItem);
 
-        rescanMenuItem2 = new JMenuItem();
-        rescanMenuItem2.setText(rb.getString("menuItem.rescanSelectedFile.text"));
-        rescanMenuItem2.setMnemonic(KeyEvent.VK_R);
-        popupOutline.add(rescanMenuItem2);
+        popupOutline.add(rescanMenuItem);
 
         popupOutline.addSeparator();
 
-        editLeftMenuItem2 = new JMenuItem();
-        editLeftMenuItem2.setText(rb.getString("menuItem.editLeftFile.text"));
-        editLeftMenuItem2.setMnemonic(KeyEvent.VK_L);
-        popupOutline.add(editLeftMenuItem2);
+        popupOutline.add(editLeftMenuItem);
 
-        editRightMenuItem2 = new JMenuItem();
-        editRightMenuItem2.setText(rb.getString("menuItem.editRightFile.text"));
-        editRightMenuItem2.setMnemonic(KeyEvent.VK_R);
-        popupOutline.add(editRightMenuItem2);
+        popupOutline.add(editRightMenuItem);
 
         menuItem = new JMenuItem();
         menuItem.setText(rb.getString("menuItem.editCompositeFile.text"));
-        menuItem.setMnemonic(KeyEvent.VK_C);
         menuItem.setEnabled(false);
         popupOutline.add(menuItem);
+
+        popupOutline.add(copyFilesMenuItem);
 
         // popup expanded menu
         popupExpanded = new JPopupMenu();
@@ -1181,37 +1140,22 @@ Debug.println(mainView.getSelectedIndex());
 
         popupExpanded.addSeparator();
 
-        nextMenuItem3 = new JMenuItem();
-        nextMenuItem3.setText(rb.getString("menuItem.nextChange.text"));
-        nextMenuItem3.setMnemonic(KeyEvent.VK_N); // F8
-        popupExpanded.add(nextMenuItem3);
+        popupExpanded.add(nextMenuItem);
 
-        prevMenuItem3 = new JMenuItem();
-        prevMenuItem3.setText(rb.getString("menuItem.previousChange.text"));
-        prevMenuItem3.setMnemonic(KeyEvent.VK_P); // F7
-        popupExpanded.add(prevMenuItem3);
+        popupExpanded.add(prevMenuItem);
 
         outlineMenuItem = new JMenuItem();
         outlineMenuItem.setText(rb.getString("button.changeMode.text.outline"));
         outlineMenuItem.setMnemonic(KeyEvent.VK_O);
         popupExpanded.add(outlineMenuItem);
 
-        rescanMenuItem3 = new JMenuItem();
-        rescanMenuItem3.setText(rb.getString("menuItem.rescanSelectedFile.text"));
-        rescanMenuItem3.setMnemonic(KeyEvent.VK_R);
-        popupExpanded.add(rescanMenuItem3);
+        popupExpanded.add(rescanMenuItem);
 
         popupExpanded.addSeparator();
 
-        editLeftMenuItem3 = new JMenuItem();
-        editLeftMenuItem3.setText(rb.getString("menuItem.editLeftFile.text"));
-        editLeftMenuItem3.setMnemonic(KeyEvent.VK_L);
-        popupExpanded.add(editLeftMenuItem3);
+        popupExpanded.add(editLeftMenuItem);
 
-        editRightMenuItem3 = new JMenuItem();
-        editRightMenuItem3.setText(rb.getString("menuItem.editRightFile.text"));
-        editRightMenuItem3.setMnemonic(KeyEvent.VK_R);
-        popupExpanded.add(editRightMenuItem3);
+        popupExpanded.add(editRightMenuItem);
 
         menuItem = new JMenuItem();
         menuItem.setText(rb.getString("menuItem.editCompositeFile.text"));
@@ -1238,7 +1182,7 @@ Debug.println(mainView.getSelectedIndex());
     void initMain(Model model) {
         // 1.
         mainView.setCellRenderer(new SimpleListCellRenderer(model));
-    
+
         // 2.
         viewOutline.setSelected(model.displayMode == DisplayMode.OUTLINE_MODE);
         viewExpand.setSelected(model.displayMode == DisplayMode.EXPANDED_MODE);
@@ -1268,14 +1212,14 @@ Debug.println(mainView.getSelectedIndex());
             hideNums.setSelected(true);
             break;
         }
-    
+
         ignoreBlanks.setSelected(model.isIgnoreBlanks());
         showIdentical.setSelected(model.isShowIdentical());
         showLeft.setSelected(model.isShowLeft());
         showRight.setSelected(model.isShowRight());
         showDifferent.setSelected(model.isShowDifferent());
         hideMarked.setSelected(model.isHideMarked());
-    
+
         // 3.2. history
         for (int i = 0; i < model.patterns.size(); i++) {
             patternField.addItem(model.patterns.get(i));

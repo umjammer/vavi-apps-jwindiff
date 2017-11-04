@@ -35,7 +35,7 @@ import vavi.util.event.GenericSupport;
 
 /**
  * Model.
- * 
+ *
  * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
  * @version 0.00 040827 nsano initial version <br>
  */
@@ -87,14 +87,17 @@ class Model {
         right,
         both
     }
+
     /** expand */
     ShowExpandMode showExpandMode = ShowExpandMode.both;
+
     /** */
     enum ShowNumMode {
         left,
         right,
         none
     }
+
     /** expand */
     ShowNumMode showNumMode = ShowNumMode.left;
 
