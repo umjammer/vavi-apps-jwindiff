@@ -98,6 +98,10 @@ class SwingController {
         view.exitMenuItem.addActionListener(exitAction);
         view.editLeftMenuItem.addActionListener(editLeftAction);
         view.editRightMenuItem.addActionListener(editRightAction);
+        view.editLeftMenuItem2.addActionListener(editLeftAction);
+        view.editRightMenuItem2.addActionListener(editRightAction);
+        view.editLeftMenuItem3.addActionListener(editLeftAction);
+        view.editRightMenuItem3.addActionListener(editRightAction);
         view.setEditorMenuItem.addActionListener(setEditorAction);
         view.copyFilesMenuItem.addActionListener(copyFilesAction);
         view.viewOutline.addActionListener(outlineAction);
@@ -105,6 +109,12 @@ class SwingController {
         view.prevMenuItem.addActionListener(prevAction);
         view.nextMenuItem.addActionListener(nextAction);
         view.rescanMenuItem.addActionListener(rescanAction);
+        view.prevMenuItem2.addActionListener(prevAction);
+        view.nextMenuItem2.addActionListener(nextAction);
+        view.rescanMenuItem2.addActionListener(rescanAction);
+        view.prevMenuItem3.addActionListener(prevAction);
+        view.nextMenuItem3.addActionListener(nextAction);
+        view.rescanMenuItem3.addActionListener(rescanAction);
         view.showLeftOnly.addActionListener(setShowExpandModeAction);
         view.showRightOnly.addActionListener(setShowExpandModeAction);
         view.showBoth.addActionListener(setShowExpandModeAction);
@@ -292,7 +302,7 @@ class SwingController {
         public void actionPerformed(ActionEvent ev) {
             boolean showIdentical = view.showIdentical.isSelected();
 
-            controller.setShowIdentical(!showIdentical);
+            controller.setShowIdentical(showIdentical);
         }
     };
 
@@ -303,7 +313,7 @@ class SwingController {
         public void actionPerformed(ActionEvent ev) {
             boolean showLeft = view.showLeft.isSelected();
 
-            controller.setShowLeft(!showLeft);
+            controller.setShowLeft(showLeft);
         }
     };
 
@@ -314,7 +324,7 @@ class SwingController {
         public void actionPerformed(ActionEvent ev) {
             boolean showRight = view.showRight.isSelected();
 
-            controller.setShowRight(!showRight);
+            controller.setShowRight(showRight);
         }
     };
 
@@ -325,7 +335,7 @@ class SwingController {
         public void actionPerformed(ActionEvent ev) {
             boolean showDifferent = view.showDifferent.isSelected();
 
-            controller.setShowDifferent(!showDifferent);
+            controller.setShowDifferent(showDifferent);
         }
     };
 

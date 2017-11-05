@@ -43,6 +43,7 @@
       <pom refid="maven.project" />
     </artifact:dependencies>
     <artifact:mvn pom="pom.xml">
+      <arg value="clean"/>
       <arg value="package"/>
       <arg value="-Dmaven.test.skip=true"/>
     </artifact:mvn>

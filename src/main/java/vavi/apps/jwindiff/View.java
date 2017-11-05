@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -36,8 +37,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListModel;
-import javax.swing.border.BevelBorder;
+import javax.swing.UIManager;
 
 import vavi.apps.jwindiff.Controller.Order;
 import vavi.apps.jwindiff.Model.DisplayMode;
@@ -62,8 +64,10 @@ class View {
     /** */
     private static final ResourceBundle rb = ResourceBundle.getBundle("JWinDiffResources", Locale.getDefault());
 
-    // CONSTANTS
-    private static final int DEFAULT_WIDTH = 800;
+    static {
+        UIManager.getDefaults().put("ScrollPane.border", BorderFactory.createEmptyBorder());
+        UIManager.getDefaults().put("TextField.border", BorderFactory.createEmptyBorder());
+    }
 
     /** */
     View() {
@@ -144,7 +148,7 @@ class View {
             } else if ("redisplayExpandedBefore".equals(name)) {
                 redisplayExpandedBefore();
             } else if ("redisplayOutlineAfter".equals(name)) {
-                redisplayOutlineAfter((DefaultListModel<Object>) ev.getArguments()[0], (Pair) ev.getArguments()[1]);
+                redisplayOutlineAfter((List<Pair>) ev.getArguments()[0], (Pair) ev.getArguments()[1]);
             } else if ("redisplayOutlineBefore".equals(name)) {
                 redisplayOutlineBefore((String) ev.getArguments()[0], (String) ev.getArguments()[1]);
             } else if ("pageMain".equals(name)) {
@@ -182,7 +186,12 @@ class View {
      * TODO
      * set the diff display widget into outline mode
      */
-    void redisplayOutlineAfter(ListModel<Object> listModel, Pair current) {
+    void redisplayOutlineAfter(List<Pair> pairs, Pair current) {
+        DefaultListModel<Object> listModel = new DefaultListModel<>();
+        for (Pair pair : pairs) {
+            listModel.addElement(pair);
+        }
+
         mainView.setModel(listModel);
         mainView.setSelectedValue(current, true);
 
@@ -331,10 +340,10 @@ Debug.println(mainView.getSelectedIndex());
         l.setPreferredSize(new Dimension(w * 6 / 10, 0));
         p.add(l);
 
-        l = new JLabel(System.getProperty("user.dir"));
-        l.setOpaque(true);
-        l.setBackground(Color.white);
-        p.add(l);
+        JTextField t = new JTextField(System.getProperty("user.dir"));
+        t.setBackground(UIManager.getColor("Panel.background"));
+        t.setBorder(BorderFactory.createLineBorder(UIManager.getColor("Panel.background"), 4));
+        p.add(t);
 
         base.add(p);
 
@@ -789,6 +798,28 @@ Debug.println(mainView.getSelectedIndex());
     /** */
     JMenuItem outlineMenuItem;
 
+    /** 使い回しはできない */
+    JMenuItem prevMenuItem2;
+    /** */
+    JMenuItem nextMenuItem2;
+    /** */
+    JMenuItem rescanMenuItem2;
+    /** */
+    JMenuItem editLeftMenuItem2;
+    /** */
+    JMenuItem editRightMenuItem2;
+
+    /** */
+    JMenuItem prevMenuItem3;
+    /** */
+    JMenuItem nextMenuItem3;
+    /** */
+    JMenuItem rescanMenuItem3;
+    /** */
+    JMenuItem editLeftMenuItem3;
+    /** */
+    JMenuItem editRightMenuItem3;
+
     /** */
     JMenuItem copyFilesMenuItem;
 
@@ -801,13 +832,14 @@ Debug.println(mainView.getSelectedIndex());
         Toolkit t = Toolkit.getDefaultToolkit();
         Dimension d = t.getScreenSize();
 
-        int width = DEFAULT_WIDTH;
+        int width = d.width / 2;
         int height = d.height * 3 / 4;
 
         top = new JFrame();
         top.setIconImage(t.getImage(this.getClass().getResource(rb.getString("frame.jWinDiff.iconImage"))));
         top.setTitle(rb.getString("frame.title.scanning"));
         top.setSize(width, height);
+        top.setLocation((d.width - width) / 2, (d.height - height) / 2);
 
         JPanel base = new JPanel();
         base.setLayout(new BorderLayout());
@@ -824,8 +856,9 @@ Debug.println(mainView.getSelectedIndex());
 //      panel.setBackground(Color.cyan);
         base.add(panel, BorderLayout.NORTH);
 
+        int fontSize = Integer.valueOf(rb.getString("panel.jWinDiff.font.size"));
         mainView = new JList<>();
-        mainView.setFont(new Font(rb.getString("panel.jWinDiff.font.name"), Font.PLAIN, 12));
+        mainView.setFont(new Font(rb.getString("panel.jWinDiff.font.name"), Font.PLAIN, fontSize));
 
         sp = new JScrollPane();
         sp.setViewportView(mainView);
@@ -1107,22 +1140,37 @@ Debug.println(mainView.getSelectedIndex());
 
         popupOutline.addSeparator();
 
-        popupOutline.add(nextMenuItem);
+        nextMenuItem2 = new JMenuItem();
+        nextMenuItem2.setText(rb.getString("menuItem.nextChange.text"));
+        nextMenuItem2.setMnemonic(KeyEvent.VK_N); // F8
+        popupOutline.add(nextMenuItem2);
 
-        popupOutline.add(prevMenuItem);
+        prevMenuItem2 = new JMenuItem();
+        prevMenuItem2.setText(rb.getString("menuItem.previousChange.text"));
+        prevMenuItem2.setMnemonic(KeyEvent.VK_P); // F7
+        popupOutline.add(prevMenuItem2);
 
         expandMenuItem = new JMenuItem();
         expandMenuItem.setText(rb.getString("button.changeMode.text.expand"));
         expandMenuItem.setMnemonic(KeyEvent.VK_E);
         popupOutline.add(expandMenuItem);
 
-        popupOutline.add(rescanMenuItem);
+        rescanMenuItem2 = new JMenuItem();
+        rescanMenuItem2.setText(rb.getString("menuItem.rescanSelectedFile.text"));
+        rescanMenuItem2.setMnemonic(KeyEvent.VK_R);
+        popupOutline.add(rescanMenuItem2);
 
         popupOutline.addSeparator();
 
-        popupOutline.add(editLeftMenuItem);
+        editLeftMenuItem2 = new JMenuItem();
+        editLeftMenuItem2.setText(rb.getString("menuItem.editLeftFile.text"));
+        editLeftMenuItem2.setMnemonic(KeyEvent.VK_L);
+        popupOutline.add(editLeftMenuItem2);
 
-        popupOutline.add(editRightMenuItem);
+        editRightMenuItem2 = new JMenuItem();
+        editRightMenuItem2.setText(rb.getString("menuItem.editRightFile.text"));
+        editRightMenuItem2.setMnemonic(KeyEvent.VK_R);
+        popupOutline.add(editRightMenuItem2);
 
         menuItem = new JMenuItem();
         menuItem.setText(rb.getString("menuItem.editCompositeFile.text"));
@@ -1140,22 +1188,37 @@ Debug.println(mainView.getSelectedIndex());
 
         popupExpanded.addSeparator();
 
-        popupExpanded.add(nextMenuItem);
+        nextMenuItem3 = new JMenuItem();
+        nextMenuItem3.setText(rb.getString("menuItem.nextChange.text"));
+        nextMenuItem3.setMnemonic(KeyEvent.VK_N); // F8
+        popupExpanded.add(nextMenuItem3);
 
-        popupExpanded.add(prevMenuItem);
+        prevMenuItem3 = new JMenuItem();
+        prevMenuItem3.setText(rb.getString("menuItem.previousChange.text"));
+        prevMenuItem3.setMnemonic(KeyEvent.VK_P); // F7
+        popupExpanded.add(prevMenuItem3);
 
         outlineMenuItem = new JMenuItem();
         outlineMenuItem.setText(rb.getString("button.changeMode.text.outline"));
         outlineMenuItem.setMnemonic(KeyEvent.VK_O);
         popupExpanded.add(outlineMenuItem);
 
-        popupExpanded.add(rescanMenuItem);
+        rescanMenuItem3 = new JMenuItem();
+        rescanMenuItem3.setText(rb.getString("menuItem.rescanSelectedFile.text"));
+        rescanMenuItem3.setMnemonic(KeyEvent.VK_R);
+        popupExpanded.add(rescanMenuItem3);
 
         popupExpanded.addSeparator();
 
-        popupExpanded.add(editLeftMenuItem);
+        editLeftMenuItem3 = new JMenuItem();
+        editLeftMenuItem3.setText(rb.getString("menuItem.editLeftFile.text"));
+        editLeftMenuItem3.setMnemonic(KeyEvent.VK_L);
+        popupExpanded.add(editLeftMenuItem3);
 
-        popupExpanded.add(editRightMenuItem);
+        editRightMenuItem3 = new JMenuItem();
+        editRightMenuItem3.setText(rb.getString("menuItem.editRightFile.text"));
+        editRightMenuItem3.setMnemonic(KeyEvent.VK_R);
+        popupExpanded.add(editRightMenuItem3);
 
         menuItem = new JMenuItem();
         menuItem.setText(rb.getString("menuItem.editCompositeFile.text"));
@@ -1169,7 +1232,6 @@ Debug.println(mainView.getSelectedIndex());
         panel.add(BorderLayout.WEST, names);
 
         paths = new JLabel();
-        paths.setBorder(new BevelBorder(BevelBorder.LOWERED));
         panel.add(BorderLayout.CENTER, paths);
 
         // chageMode button
@@ -1213,6 +1275,12 @@ Debug.println(mainView.getSelectedIndex());
             break;
         }
 
+Debug.println("isIgnoreBlanks: " + model.isIgnoreBlanks());
+Debug.println("isShowIdentical: " + model.isShowIdentical());
+Debug.println("isShowLeft: " + model.isShowLeft());
+Debug.println("isShowRight: " + model.isShowRight());
+Debug.println("isShowDifferent: " + model.isShowDifferent());
+Debug.println("isHideMarked: " + model.isHideMarked());
         ignoreBlanks.setSelected(model.isIgnoreBlanks());
         showIdentical.setSelected(model.isShowIdentical());
         showLeft.setSelected(model.isShowLeft());
@@ -1221,8 +1289,16 @@ Debug.println(mainView.getSelectedIndex());
         hideMarked.setSelected(model.isHideMarked());
 
         // 3.2. history
-        for (int i = 0; i < model.patterns.size(); i++) {
-            patternField.addItem(model.patterns.get(i));
+        for (String pattern : model.markPatterns) {
+            patternField.addItem(pattern);
+        }
+
+        for (String pattern : model.dir1Patterns) {
+            patternField.addItem(pattern);
+        }
+
+        for (String pattern : model.dir2Patterns) {
+            patternField.addItem(pattern);
         }
     }
 
