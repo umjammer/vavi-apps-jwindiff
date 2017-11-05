@@ -19,10 +19,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -312,6 +314,7 @@ class Model {
 // Debug.println(isMultiMode);
         if (multiMode) {
             makePairs(left, right);
+            setMarked();
         } else {
             current = new Pair(getLeftFilePath(), left, getRightFilePath(), right);
             pairs.clear();
@@ -460,6 +463,15 @@ Debug.println(pair.getCommonName());
         }
     }
 
+    /**
+     * mark by regex markPatterns
+     */
+    void setMarked() {
+        for (String pattern : markPatterns) {
+            markRegex(pattern);
+        }
+    }
+
     // serializer ----
 
     /** */
@@ -572,12 +584,24 @@ Debug.println(pair.getCommonName());
 
         // history
 
-        for (int i = 0; i < patterns.size(); i++) {
-            String name = "history.pattern." + i;
-            String value = patterns.get(i);
-            value = value == null ? "" : String.valueOf(value);
-            props.setProperty(name, value);
+        int i = 1;
+        for (String pattern : markPatterns) {
+            String name = "history.pattern." + i++;
+            props.setProperty(name, pattern);
         }
+
+        i = 1;
+        for (String pattern : dir1Patterns) {
+            String name = "dir1.pattern." + i++;
+            props.setProperty(name, pattern);
+        }
+
+        i = 1;
+        for (String pattern : dir2Patterns) {
+            String name = "dir2.pattern." + i++;
+            props.setProperty(name, pattern);
+        }
+
 
         props.store(os, "JWinDiff");
     }
@@ -588,7 +612,13 @@ Debug.println(pair.getCommonName());
     String editor = System.getProperty("EDITOR");
 
     /** The configuration properties */
-    List<String> patterns = new ArrayList<>();
+    Set<String> markPatterns = new HashSet<>();
+
+    /** The configuration properties */
+    Set<String> dir1Patterns = new HashSet<>();
+
+    /** The configuration properties */
+    Set<String> dir2Patterns = new HashSet<>();
 
     private static final String PROP_EDITOR = "editor";
     private static final String PROP_EXPAND = "expand";
@@ -622,25 +652,49 @@ Debug.println(pair.getCommonName());
 
         value = props.getProperty(PROP_IGNOREBLANKS, "false");
         ignoreBlanks = Boolean.valueOf(value);
-        value = props.getProperty(PROP_SHOWIDENTICAL, "false");
+        value = props.getProperty(PROP_SHOWIDENTICAL, "true");
         showIdentical = Boolean.valueOf(value);
         value = props.getProperty(PROP_SHOWLEFTONLY, "false");
         showLeft = Boolean.valueOf(value);
         value = props.getProperty(PROP_SHOWRIGHTONLY, "false");
         showRight = Boolean.valueOf(value);
-        value = props.getProperty(PROP_SHOWDIFFERENT, "false");
+        value = props.getProperty(PROP_SHOWDIFFERENT, "true");
         showDifferent = Boolean.valueOf(value);
-        value = props.getProperty(PROP_HIDEMARKED, "false");
+        value = props.getProperty(PROP_HIDEMARKED, "true");
         hideMarked = Boolean.valueOf(value);
 
         // history
 
-        for (int i = 0; i < 10; i++) {
-            String name = "history.pattern." + i;
+        int i = 1;
+        while (i < 100) {
+            String name = "history.pattern." + i++;
             value = props.getProperty(name);
             if (value != null && !"".equals(value)) {
-Debug.println(name + " = " + value);
-                patterns.add(value);
+                markPatterns.add(value);
+            } else {
+                break;
+            }
+        }
+
+        i = 1;
+        while (i < 100) {
+            String name = "dir1.pattern." + i++;
+            value = props.getProperty(name);
+            if (value != null && !"".equals(value)) {
+                dir1Patterns.add(value);
+            } else {
+                break;
+            }
+        }
+
+        i = 1;
+        while (i < 100) {
+            String name = "dir2.pattern." + i++;
+            value = props.getProperty(name);
+            if (value != null && !"".equals(value)) {
+                dir2Patterns.add(value);
+            } else {
+                break;
             }
         }
     }

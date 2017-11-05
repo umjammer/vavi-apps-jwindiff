@@ -8,6 +8,7 @@ package vavi.apps.jwindiff;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FontMetrics;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -52,7 +53,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
                                                          isSelected,
                                                          cellHasFocus);
         if (value instanceof Pair) {
-            setPair((Pair) value, index);
+            setPair((Pair) value, index, (int) list.getSize().getWidth(), list.getFontMetrics(list.getFont()));
         } else if (value instanceof Line) {
             setLine((Line) value, index);
         }
@@ -61,10 +62,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** */
-    private static final int MERGIN = 80;
-
-    /** TODO 漢字等の文字幅に対応していない */
-    private void setPair(Pair pair, int index) {
+    private void setPair(Pair pair, int index, int width, FontMetrics fontMetrics) {
 
         if (pair.getDiff().isDifferent()) {
             setForeground(Color.red);
@@ -76,13 +74,16 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
 
         String s = new String();
         if (!model.getShowNumMode().equals(ShowNumMode.none)) {
-            s += toInt5(index + 1) + "    ";
+            s += toInt5(index + 1);
         }
         if (model.isMultiMode()) {
-            s += toStringN(pair.getCommonName(), MERGIN) + "  " + getDescription(pair);
+            s += toStringN(pair.getCommonName(), width / 2, fontMetrics);
         } else {
-            s += toStringN(pair.getLeft() + " : " + pair.getRight(), MERGIN) + "  " + getDescription(pair);
+            s += toStringN(pair.getLeft() + " : " + pair.getRight(), width / 2, fontMetrics);
         }
+
+        s += getDescription(pair);
+
         setText(s);
     }
 
@@ -124,7 +125,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         setOpaque(true);
 
         String s = new String();
-//	    String s = new String(toInt5(index) + " ");	// TODO debug
+//      String s = new String(toInt5(index) + " "); // TODO debug
         if (!model.getShowNumMode().equals(ShowNumMode.none) &&
             !(model.getShowExpandMode().equals(ShowExpandMode.left) && line.getFlag() == Line.Type.INSERTED) &&
             !(model.getShowExpandMode().equals(ShowExpandMode.right) && line.getFlag() == Line.Type.DELETED)) {
@@ -162,9 +163,25 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO */
-    private final String toStringN(String v, int n) {
-        String s = v + spaceN(n - 1);
-        return s.substring(0, n);
+    private final String toStringN(String v, int w, FontMetrics fontMetrics) {
+        int width = fontMetrics.stringWidth(v);
+        int n = 1;
+        String s;
+        if (width > w) {
+            do {
+                s = v.substring(0, v.length() - n);
+                n++;
+                width = fontMetrics.stringWidth(s);
+            } while (width > w);
+        } else {
+            do {
+                s = v + spaceN(n);
+                n++;
+                width = fontMetrics.stringWidth(s);
+            } while (width < w);
+        }
+
+        return s;
     }
 
     /** TODO */

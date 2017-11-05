@@ -17,11 +17,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
-
-import javax.swing.DefaultListModel;
 
 import vavi.apps.jwindiff.Model.DisplayMode;
 import vavi.apps.jwindiff.Model.ShowExpandMode;
@@ -93,21 +93,21 @@ class Controller {
 
         form.redisplayOutlineBefore(model.getLeftFilePath(), model.getRightFilePath());
 
-        DefaultListModel<Pair> listModel = new DefaultListModel<>();
+        List<Pair> list = new ArrayList<>();
 
         // set the current visibility of each pair
         for (int i = 0; i < model.pairs.size(); i++) {
             Pair pair = model.pairs.get(i);
+            if (pair.getDiff() == Pair.Type.NOTYETDIFFED) {
+                pair.quickDiff();
+            }
             if (pair.isVisible(model.isShowIdentical(), model.isShowLeft(), model.isShowRight(), model.isShowDifferent(), model.isHideMarked())) {
-                if (pair.getDiff() == Pair.Type.NOTYETDIFFED) {
-                    pair.quickDiff();
-                }
 // pair.debug();
-                listModel.addElement(pair);
+                list.add(pair);
             }
         }
 
-        form.redisplayOutlineAfter(listModel, model.current);
+        form.redisplayOutlineAfter(list, model.current);
     }
 
     /**
@@ -257,15 +257,7 @@ Debug.println(Level.SEVERE, e);
      * @controller unused
      */
     void clearPatternHistory() {
-        model.patterns.clear();
-    }
-
-    /**
-     * @controller
-     */
-    void addPatternHistory(String value) {
-        value = value == null ? "" : value;
-        model.patterns.add(value);
+        model.markPatterns.clear();
     }
 
     /**
@@ -397,9 +389,11 @@ Debug.println(e);
      * @controller
      */
     void markRegex(String regex) {
-        model.markRegex(regex);
-        addPatternHistory(regex);
-        updateOutline();
+        if (!regex.isEmpty()) { // TODO is this logic in model?
+            model.markRegex(regex);
+            model.markPatterns.add(regex);
+            updateOutline();
+        }
     }
 
     //----

@@ -11,9 +11,16 @@
   <organization>
     <name></name>
   </organization>
-  <version>0.1.7</version>
+  <version>0.1.8</version>
   <url>https://github.com/umjammer/vavi-apps-jwindiff</url>
-  <description></description>
+  <description>0.1.8
+
+   build fat jar
+   fix maven native2ascii plugin
+
+TODO
+
+   when the location bar is clicked,  jump to the location</description>
   <build>
     <plugins>
       <plugin>
@@ -33,11 +40,34 @@
               <goal>native2ascii</goal>
             </goals>
             <configuration>
-              <encoding>Windows-31J</encoding>
+              <includes>**/*_ja.properties</includes>
             </configuration>
           </execution>
-        </executions>
+          </executions>
       </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+            <archive>
+              <manifest>
+                <mainClass>vavi.apps.jwindiff.JWinDiff</mainClass>
+              </manifest>
+            </archive>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
     </plugins>
     <pluginManagement>
       <plugins>
@@ -49,20 +79,6 @@
           <configuration>
             <lifecycleMappingMetadata>
               <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>javacc-maven-plugin</artifactId>
-                    <versionRange>[2.5,)</versionRange>
-                    <goals>
-                      <goal>javacc</goal>
-                      <goal>jjtree-javacc</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
                 <pluginExecution>
                   <pluginExecutionFilter>
                     <groupId>org.codehaus.mojo</groupId>
