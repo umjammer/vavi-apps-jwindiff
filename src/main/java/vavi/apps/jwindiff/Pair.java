@@ -17,7 +17,7 @@ import vavi.util.gnu.DiffUtil;
 
 /**
  * Pair.
- * 
+ *
  * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
  * @version 0.00 040612 vavi refactoring <br>
  */
@@ -30,7 +30,7 @@ class Pair {
     String leftFilePath;
 
     /**
-     * 
+     *
      */
     enum Type {
         /**  0 ..... */
@@ -214,7 +214,7 @@ Debug.printStackTrace(e);
     }
 
     /**
-     * 
+     *
      */
     public void quickDiff() {
 
@@ -240,7 +240,7 @@ Debug.println(Level.SEVERE, e);
     }
 
     /**
-     * 
+     *
      */
     public void slowDiff(boolean isIgnoreBlanks) {
         try {

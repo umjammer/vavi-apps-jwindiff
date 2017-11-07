@@ -333,7 +333,7 @@ Debug.println(pair.getCommonName());
 
     /**
      * Build up a comprehensive list of files.
-     * 
+     *
      * @param ldir the directory to be added to the file list.
      * @param rdir same as the left.
      */
@@ -349,7 +349,7 @@ Debug.println(pair.getCommonName());
 
     /**
      * Build up a comprehensive list of files.
-     * 
+     *
      * @param lfiles the file list.
      * @param rfiles same as the left.
      */
@@ -383,7 +383,7 @@ Debug.println(pair.getCommonName());
 
     /**
      * Fills an array of File for the contents of a given directory.
-     * 
+     *
      * @param directory path to the required directory
      */
     private void fillFileList(File directory, List<File> entries) {
@@ -402,7 +402,7 @@ Debug.println(pair.getCommonName());
 
     /**
      * Look for the given name in the name field of a given array of Files.
-     * 
+     *
      * @return null if not found.
      */
     private File findIn(List<File> rfiles, File lfile) {

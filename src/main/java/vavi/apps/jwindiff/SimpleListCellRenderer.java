@@ -135,13 +135,13 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         // TODO, TAB
         switch (model.getShowExpandMode()) {
         case left:
-            if (line.getFlag() == Line.Type.PLAIN) 
+            if (line.getFlag() == Line.Type.PLAIN)
             s += "  " + "   " + replaceTabToSpace(line.getLine());
             else if (line.getFlag() == Line.Type.DELETED)
             s += "<!" + "   " + replaceTabToSpace(line.getLine());
             break;
         case right:
-            if (line.getFlag() == Line.Type.PLAIN) 
+            if (line.getFlag() == Line.Type.PLAIN)
             s += "  " + "   " + replaceTabToSpace(line.getLine());
             else if (line.getFlag() == Line.Type.INSERTED)
             s += "!>" + "   " + replaceTabToSpace(line.getLine());
