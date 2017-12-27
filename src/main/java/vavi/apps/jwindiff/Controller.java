@@ -34,7 +34,7 @@ import vavi.util.gnu.DiffUtil;
  * Controller.
  * アプリケーションそのもの。View を除いたもの。
  *
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 060726 nsano initial version <br>
  */
 class Controller {

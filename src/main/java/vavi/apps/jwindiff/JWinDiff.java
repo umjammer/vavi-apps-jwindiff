@@ -15,7 +15,7 @@ import vavi.util.Debug;
  * TODO JList を JTable に
  * </p>
  * @author David Drysdale
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 020425 vavi port from <a href="http://www.lurklurk.org/xwindiff.html">xwindiff</a> <br>
  *          0.10 020428 vavi rewrite almost <br>
  *          0.11 021117 vavi performance up <br>

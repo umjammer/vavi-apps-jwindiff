@@ -29,7 +29,7 @@ import vavi.apps.jwindiff.Controller.Order;
 /**
  * SwingController.
  * TODO 自動生成、でもできないとこもあるぞ？？？
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 060508 nsano initial version <br>
  */
 class SwingController {

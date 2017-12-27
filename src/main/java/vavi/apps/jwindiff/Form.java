@@ -21,7 +21,7 @@ import vavi.util.event.GenericSupport;
  * Form. (one of model???)
  * モデルに影響しないデータ。画面遷移等
  *
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 060726 nsano initial version <br>
  */
 class Form {

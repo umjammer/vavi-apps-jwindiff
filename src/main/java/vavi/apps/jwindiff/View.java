@@ -56,7 +56,7 @@ import vavi.util.event.GenericListener;
 /**
  * View.
  *
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 060504 nsano initial version <br>
  */
 class View {
@@ -1275,12 +1275,12 @@ Debug.println(mainView.getSelectedIndex());
             break;
         }
 
-Debug.println("isIgnoreBlanks: " + model.isIgnoreBlanks());
-Debug.println("isShowIdentical: " + model.isShowIdentical());
-Debug.println("isShowLeft: " + model.isShowLeft());
-Debug.println("isShowRight: " + model.isShowRight());
-Debug.println("isShowDifferent: " + model.isShowDifferent());
-Debug.println("isHideMarked: " + model.isHideMarked());
+//Debug.println("isIgnoreBlanks: " + model.isIgnoreBlanks());
+//Debug.println("isShowIdentical: " + model.isShowIdentical());
+//Debug.println("isShowLeft: " + model.isShowLeft());
+//Debug.println("isShowRight: " + model.isShowRight());
+//Debug.println("isShowDifferent: " + model.isShowDifferent());
+//Debug.println("isHideMarked: " + model.isHideMarked());
         ignoreBlanks.setSelected(model.isIgnoreBlanks());
         showIdentical.setSelected(model.isShowIdentical());
         showLeft.setSelected(model.isShowLeft());
