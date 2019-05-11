@@ -633,6 +633,13 @@ Debug.println(mainView.getSelectedIndex());
 
     // -------------------------------------------------------------------------
 
+    public static final Color green = new Color(0xD6, 0xFF, 0xEA);
+    public static final Color red = new Color(0xFF, 0xE5, 0xDD);
+    public static final Color darkGreen = new Color(0x00, 0x57, 0x33);
+    public static final Color darkRed = new Color(0xC3, 0x00, 0x00);
+    public static final Color darkGray = new Color(0xCA, 0xCA, 0xCA);
+    public static final Color blue = new Color(0x00, 0x2A, 0xDA);
+
     /** */
     int first;
 
@@ -687,10 +694,10 @@ Debug.println(mainView.getSelectedIndex());
                 g.setColor(Color.black);
                 g.drawRect(BR, y, BW, h);
             } else if (flag == Line.Type.DELETED) {
-                g.setColor(Color.red);
+                g.setColor(red);
                 g.fillRect(BR, y, BW, h);
             } else if (flag == Line.Type.INSERTED) {
-                g.setColor(Color.yellow);
+                g.setColor(green);
                 g.fillRect(BR, y, BW, h);
             }
         }
@@ -709,7 +716,7 @@ Debug.println(mainView.getSelectedIndex());
             int y = Math.round((float) first / size * height);
             int h = Math.round((float) (last - first + 1) / size * height);
 
-            g.setColor(Color.blue);
+            g.setColor(darkGray);
             g.fillRect(CX, y, CW, h);
         }
 
@@ -859,6 +866,7 @@ Debug.println(mainView.getSelectedIndex());
         int fontSize = Integer.valueOf(rb.getString("panel.jWinDiff.font.size"));
         mainView = new JList<>();
         mainView.setFont(new Font(rb.getString("panel.jWinDiff.font.name"), Font.PLAIN, fontSize));
+Debug.println(mainView.getFont());
 
         sp = new JScrollPane();
         sp.setViewportView(mainView);
@@ -1228,7 +1236,7 @@ Debug.println(mainView.getSelectedIndex());
 
         // labels
         names = new JLabel();
-        names.setForeground(Color.blue);
+        names.setForeground(blue);
         panel.add(BorderLayout.WEST, names);
 
         paths = new JLabel();

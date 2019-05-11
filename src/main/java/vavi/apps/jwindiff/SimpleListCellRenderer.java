@@ -6,7 +6,6 @@
 
 package vavi.apps.jwindiff;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;
 import java.text.MessageFormat;
@@ -65,10 +64,10 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     private void setPair(Pair pair, int index, int width, FontMetrics fontMetrics) {
 
         if (pair.getDiff().isDifferent()) {
-            setForeground(Color.red);
+            setForeground(View.darkRed);
         }
         if (pair.getMarked()) {
-            setBackground(Color.yellow);
+            setBackground(View.blue);
         }
         setOpaque(true);
 
@@ -118,9 +117,9 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
      */
     private void setLine(Line line, int index) {
         if (line.getFlag() == Line.Type.DELETED) {
-            setBackground(Color.red);
+            setBackground(View.red);
         } else if (line.getFlag() == Line.Type.INSERTED) {
-            setBackground(Color.yellow);
+            setBackground(View.green);
         }
         setOpaque(true);
 

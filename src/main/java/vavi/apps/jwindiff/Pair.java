@@ -203,8 +203,7 @@ Debug.printStackTrace(e);
         if (ignoreWhiteSpace) {
             a = DiffUtil.readLinesIgnoreWhiteSpace(left);
             b = DiffUtil.readLinesIgnoreWhiteSpace(right);
-        }
-        else {
+        } else {
             a = DiffUtil.readLines(left);
             b = DiffUtil.readLines(right);
         }
