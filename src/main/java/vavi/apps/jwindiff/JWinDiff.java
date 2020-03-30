@@ -6,6 +6,8 @@
 
 package vavi.apps.jwindiff;
 
+import vavi.swing.mvc.XController;
+import vavi.swing.mvc.XView;
 import vavi.util.Debug;
 
 
@@ -35,9 +37,6 @@ public class JWinDiff {
     Model model;
 
     /** */
-    Form form;
-
-    /** */
     Controller controller;
 
     /**
@@ -46,16 +45,11 @@ public class JWinDiff {
     private JWinDiff(String[] args) throws Exception {
 
         model = new Model();
-        form = new Form();
         view = new View();
-        controller = new Controller(model, form);
+        controller = new Controller(model);
 
-        // TODO wanna be hide
-        SwingController sc = new SwingController(controller, view);
-        sc.bind();
-
-        model.addViewListener(view.mainViewListener);
-        form.addViewListener(view.mainViewListener);
+        XController.Util.bind(controller, view);
+        model.addViewListener(ev -> XView.Util.bind(view, ev));
 
         // Create the main window and all of the dialog widgets
         controller.initMain(args);

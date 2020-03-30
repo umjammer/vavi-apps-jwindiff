@@ -6,7 +6,10 @@
 
 package vavi.apps.jwindiff;
 
-import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -23,9 +26,15 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 
+import javax.swing.JList;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+
 import vavi.apps.jwindiff.Model.DisplayMode;
 import vavi.apps.jwindiff.Model.ShowExpandMode;
 import vavi.apps.jwindiff.Model.ShowNumMode;
+import vavi.swing.mvc.SwingControllerAction;
+import vavi.swing.mvc.XController;
 import vavi.util.Debug;
 import vavi.util.gnu.DiffUtil;
 
@@ -37,6 +46,7 @@ import vavi.util.gnu.DiffUtil;
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 060726 nsano initial version <br>
  */
+@XController
 class Controller {
 
     /** */
@@ -47,20 +57,12 @@ class Controller {
         Descent
     }
 
-    //----
-
     /** モデル */
     Model model;
 
-    /** 遷移モデル */
-    Form form;
-
-    //----
-
     /** */
-    Controller(Model model, Form form) {
+    Controller(Model model) {
         this.model = model;
-        this.form = form;
     }
 
     //----
@@ -70,7 +72,7 @@ class Controller {
      * @controller
      */
     void rescan(Pair[] pairs) {
-        form.setTitle(rb.getString("frame.title.scanning"));
+        model.viewUpdated(this, "setTitle", rb.getString("frame.title.scanning"));
         if (model.displayMode != Model.DisplayMode.OUTLINE_MODE) {
             model.current.rescan();
         } else {
@@ -84,6 +86,7 @@ class Controller {
      * Display outline.
      * @controller
      */
+    @SwingControllerAction
     void updateOutline() {
 
 // Debug.println(displayMode);
@@ -91,7 +94,7 @@ class Controller {
             return;
         }
 
-        form.redisplayOutlineBefore(model.getLeftFilePath(), model.getRightFilePath());
+        model.viewUpdated(this, "redisplayOutlineBefore", model.getLeftFilePath(), model.getRightFilePath());
 
         List<Pair> list = new ArrayList<>();
 
@@ -107,7 +110,7 @@ class Controller {
             }
         }
 
-        form.redisplayOutlineAfter(list, model.current);
+        model.viewUpdated(this, "redisplayOutlineAfter", list, model.current);
     }
 
     /**
@@ -120,29 +123,29 @@ class Controller {
             return;
         }
 
-        form.redisplayExpandedBefore();
+        model.viewUpdated(this, "redisplayExpandedBefore");
 
         try {
             if (model.current.getRight() == null) {
 Debug.println("here1");
-                form.setNames(model.current.getCommonName());
+                model.viewUpdated(this, "setNames", model.current.getCommonName());
                 displaySingleFile(model.current.getLeft());
-                form.setNames(model.current.getCommonName());
+                model.viewUpdated(this, "setNames", model.current.getCommonName());
             } else if (model.current.getLeft() == null) {
 Debug.println("here2");
-                form.setNames(model.current.getCommonName());
+                model.viewUpdated(this, "setNames", model.current.getCommonName());
                 displaySingleFile(model.current.getRight());
-                form.setNames(model.current.getCommonName());
+                model.viewUpdated(this, "setNames", model.current.getCommonName());
             } else if ((model.current.getDiff() == Pair.Type.NOTYETDIFFED) || (model.current.getDiff() == Pair.Type.DIFFERENT_NOTSURE)) {
 Debug.println("here3");
                 // diff both (regular) files,
                 // and show the newly obtained results
                 if (model.isMultiMode()) {
-                    form.setNames(model.current.getCommonName());
-                    form.setPaths(model.getLeftFilePath() + " : " + model.getRightFilePath());
+                    model.viewUpdated(this, "setNames", model.current.getCommonName());
+                    model.viewUpdated(this, "setPaths", model.getLeftFilePath() + " : " + model.getRightFilePath());
                 } else {
-                    form.setNames(model.current.getLeft().getName() + " : " + model.current.getRight().getName());
-                    form.setPaths(model.getLeftFilePath() + " : " + model.getRightFilePath());
+                    model.viewUpdated(this, "setNames", model.current.getLeft().getName() + " : " + model.current.getRight().getName());
+                    model.viewUpdated(this, "setPaths", model.getLeftFilePath() + " : " + model.getRightFilePath());
                 }
                 model.current.slowDiff(model.isIgnoreBlanks());
 Debug.print(model.current);
@@ -152,7 +155,7 @@ Debug.print(model.current);
             } else if (model.current.getDiff() == Pair.Type.IDENTICAL) {
 Debug.println("here4");
                 displaySingleFile(model.current.getLeft());
-                form.setNames(model.current.getCommonName());
+                model.viewUpdated(this, "setNames", model.current.getCommonName());
             } else {
 Debug.println("here5");
                 // redisplay known diff results.
@@ -162,10 +165,10 @@ Debug.println("here5");
             }
         } catch (IOException e) {
 Debug.println(Level.SEVERE, e);
-            form.displayException(e);
+            model.viewUpdated(this, "displayException", e);
         }
 
-        form.updateGraphics();
+        model.viewUpdated(this, "updateGraphics");
     }
 
     /**
@@ -187,38 +190,40 @@ Debug.println(Level.SEVERE, e);
     void displaySingleFile(File file) throws IOException {
 // Debug.println("here");
         String lines[] = DiffUtil.readLines(file);
-        form.displaySingleFile(lines);
+        model.viewUpdated(this, "displaySingleFile", (Object[]) lines);
     }
 
     /**
      * form
      */
+    @SwingControllerAction
     void toExpand() {
         if (model.displayMode == Model.DisplayMode.EXPANDED_MODE) {
-            form.toExpand();
+            model.viewUpdated(this, "toExpand");
             return;
         }
         if (model.current == null) {
-            form.toOutline();
+            model.viewUpdated(this, "toOutline");
             return;
         }
         if (!model.current.isVisible(model.isShowIdentical(), model.isShowLeft(), model.isShowRight(), model.isShowDifferent(), model.isHideMarked())) {
 Debug.println("here");
 Debug.print(model.current);
-            form.toOutline();
+            model.viewUpdated(this, "toOutline");
             return;
         }
         model.displayMode = Model.DisplayMode.EXPANDED_MODE;
         updateExpanded();
-        form.toSelection();
+        model.viewUpdated(this, "toSelection");
     }
 
     /**
      * @controller
      */
+    @SwingControllerAction
     void toOutline() {
         if (model.displayMode == Model.DisplayMode.OUTLINE_MODE) {
-            form.toOutline();
+            model.viewUpdated(this, "toOutline");
             return;
         }
         model.displayMode = Model.DisplayMode.OUTLINE_MODE;
@@ -277,7 +282,7 @@ Debug.printStackTrace(e);
      * @controller
      */
     void updateTargets(File left, File right) {
-        form.setTitle(rb.getString("frame.title.scanning"));
+        model.viewUpdated(this, "setTitle", rb.getString("frame.title.scanning"));
 
         model.getLeftFiles().clear();
         model.getRightFiles().clear();
@@ -370,6 +375,7 @@ Debug.println(e);
      * mark
      * @controller
      */
+    @SwingControllerAction
     void toggleAllMarks() {
         model.toggleAllMarks();
         updateOutline();
@@ -483,11 +489,11 @@ Debug.println(i + ":ignore: " + file);
     /** form */
     void pageMain() {
         loadOptions();
-        form.initMain(model);
+        model.viewUpdated(this, "initMain", model);
 
-        form.pageMain();
+        model.viewUpdated(this, "pageMain");
 
-        form.setTitle(rb.getString("frame.title.scanning"));
+        model.viewUpdated(this, "setTitle", rb.getString("frame.title.scanning"));
         model.updateTargets();
         finishWork();
 
@@ -496,8 +502,9 @@ Debug.println(i + ":ignore: " + file);
     }
 
     /** form */
+    @SwingControllerAction
     void pageMain_close() {
-        form.pageMain_close();
+        model.viewUpdated(this, "pageMain_close");
         pageMain_close2();
     }
 
@@ -510,59 +517,43 @@ Debug.println(i + ":ignore: " + file);
     /** form */
     void pagePopup(int x, int y) {
         if (model.displayMode == DisplayMode.OUTLINE_MODE) {
-            form.pagePopupOutline(x, y);
+            model.viewUpdated(this, "pagePopupOutline", x, y);
         } else {
-            form.pagePopupExpanded(x, y);
+            model.viewUpdated(this, "pagePopupExpanded", x, y);
         }
     }
 
     /** form */
+    @SwingControllerAction
     void pageSaveFile() {
-        form.pageSaveFile();
+        model.viewUpdated(this, "pageSaveFile");
     }
 
     /** form */
+    @SwingControllerAction
     void pageEditorChooser() {
         if (model.editor != null && model.editor.length() != 0) {
             File file = new File(model.editor);
-            form.initEditorDialog(file);
+            model.viewUpdated(this, "initEditorDialog", file);
         }
-        form.pageEditorChooser();
+        model.viewUpdated(this, "pageEditorChooser");
     }
 
     /** form */
+    @SwingControllerAction
     void pageCompareTargetsDialog() {
         if (model.displayMode == DisplayMode.NONE_MODE) {
             if (model.getLeftFiles().size() > 0 && model.getRightFiles().size() > 0) {
                 File left = model.getLeftFiles().get(0);
                 File right = model.getRightFiles().get(0);
-                form.initCompareTargetsDialog(left, right);
+                model.viewUpdated(this, "initCompareTargetsDialog", left, right);
             }
         }
-        form.pageCompareTargetsDialog();
+        model.viewUpdated(this, "pageCompareTargetsDialog");
     }
 
     /** form */
-    void pageTargetsDialog_close() {
-        form.pageTargetsDialog_close();
-    }
-
-    /** form */
-    void pageSaveListDialog_close() {
-        form.pageSaveListDialog_close();
-    }
-
-    /** form */
-    void pageEditorDialog_close() {
-        form.pageEditorDialog_close();
-    }
-
-    /** form */
-    void pagePatternDialog_close() {
-        form.pagePatternDialog_close();
-    }
-
-    /** form */
+    @SwingControllerAction
     void editLeft() {
         if (model.current != null) {
             editFile(model.current.getLeft());
@@ -570,6 +561,7 @@ Debug.println(i + ":ignore: " + file);
     }
 
     /** form */
+    @SwingControllerAction
     void editRight() {
         if (model.current != null) {
             editFile(model.current.getRight());
@@ -628,18 +620,188 @@ Debug.println("both files do not exist: " + pair.getCommonName());
     /** */
     void findDiff(Order order) {
         if (model.displayMode == DisplayMode.OUTLINE_MODE) {
-            form.findOutline(order);
+            model.viewUpdated(this, "findOutline", order);
         } else {
-            form.findExpand(order);
+            model.viewUpdated(this, "findExpand", order);
         }
     }
 
-    /** form */
-    void markPattern() {
-        form.markPattern();
+    /**
+     * abort (file)
+     */
+    @SwingControllerAction
+    void abortAction() {
+        // TODO can't yet interrupt
+    }
+
+    /**
+     * copyFiles
+     */
+    @SwingControllerAction(view = "mainView.selectedValuesList")
+    void copyFilesAction(List<Object> selection) {
+        if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
+            return;
+        }
+        Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+        copyFiles(pairs);
+    }
+
+    /**
+     * prev
+     */
+    @SwingControllerAction
+    void prevAction() {
+        findDiff(Order.Descent);
+    }
+
+    /**
+     * next
+     */
+    @SwingControllerAction
+    void nextAction() {
+        findDiff(Order.Ascent);
+    }
+
+    /**
+     * rescan
+     */
+    @SwingControllerAction(view = "mainView.selectedValuesList")
+    void rescanAction(List<Object> selection) {
+        if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
+            return;
+        }
+        Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+        rescan(pairs);
+    }
+
+    /**
+     * show mode (expand)
+     */
+    @SwingControllerAction
+    void setShowExpandModeAction(ActionEvent ev) {
+        setShowExpandMode(ev.getActionCommand());
+    }
+
+    /**
+     * num mode (expand)
+     */
+    @SwingControllerAction
+    void setShowNumModeAction(ActionEvent ev) {
+        setShowNumMode(ev.getActionCommand());
+    }
+
+    /**
+     * showIdentical (options)
+     */
+    @SwingControllerAction(view = "showIdentical.selected")
+    void showIdenticalAction(boolean showIdentical) {
+        setShowIdentical(showIdentical);
+    }
+
+    /**
+     * showLeft (options)
+     */
+    @SwingControllerAction(view = "showLeft.selected")
+    void showLeftAction(boolean showLeft) {
+        setShowLeft(showLeft);
+    }
+
+    /**
+     * showRight (options)
+     */
+    @SwingControllerAction(view = "showRight.selected")
+    void showRightAction(boolean showRight) {
+        setShowRight(showRight);
+    }
+
+    /**
+     * showDifferent (options)
+     */
+    @SwingControllerAction(view = "showDifferent.selected")
+    void showDifferentAction(boolean showDifferent) {
+        setShowDifferent(showDifferent);
+    }
+
+    /**
+     * markFile (mark)
+     */
+    @SwingControllerAction(view = "mainView.selectedValuesList")
+    void markFileAction(List<Object> selection) {
+        if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
+            return;
+        }
+        Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+        toggleSelectedMark(pairs);
+    }
+
+    /**
+     * hideMarked (mark)
+     */
+    @SwingControllerAction(view = "hideMarked.selected")
+    void hideMarkedAction(boolean hideMarked) {
+        setHideMarked(hideMarked);
+    }
+
+    //----
+
+    /**
+     * editorDialog: ok
+     */
+    @SwingControllerAction(view = "editorChooser.selectedFile")
+    void okEditorDialogAction(File editor) {
+        if (editor.exists()) {
+            setEditor(editor.toString());
+        }
+        model.viewUpdated(this, "pageEditorDialog_close");
+    }
+
+    /**
+     * patternDialog: ok
+     */
+    @SwingControllerAction(view = "patternField.selectedItem")
+    void okPatternDialogAction(String regex) {
+        markRegex(regex);
+        model.viewUpdated(this, "pagePatternDialog_close");
+    }
+
+    /**
+     * targetsDialog: ok
+     */
+    @SwingControllerAction(view = { "leftTargetChooser.selectedFile", "rightTargetChooser.selectedFile" })
+    void okTargetsDialogAction(File left, File right) {
+        if (left != null && left.exists() && right != null && right.exists()) {
+            updateTargets(left, right);
+            update();
+        }
+        model.viewUpdated(this, "pageCompareTargetsDialog_close");
+    }
+
+    /**
+     * saveListDialog: ok
+     */
+    @SwingControllerAction(view = {
+        "listFileChooser.selectedFile",
+        "hasIdentical.selected",
+        "hasDifferent.selected",
+        "hasLeft.selected",
+        "hasRight.selected",
+        "hasNotMarked.selected",
+    })
+    void okSaveListDialogAction(
+        File file, boolean hasIdentical, boolean hasDifferent, boolean hasLeft, boolean hasRight, boolean hasNotMarked) {
+
+        setShowIdentical(hasIdentical);
+        setShowDifferent(hasDifferent);
+        setShowLeft(hasLeft);
+        setShowRight(hasRight);
+        setHideMarked(hasNotMarked);
+
+        serializePairs(file);
+        model.viewUpdated(this, "pageSaveListDialog_close");
     }
 
     /** form */
+    @SwingControllerAction
     void changeMode() {
         if (model.displayMode == DisplayMode.OUTLINE_MODE) {
             toExpand();
@@ -649,31 +811,16 @@ Debug.println("both files do not exist: " + pair.getCommonName());
     }
 
     /** form */
-    void startSelection(Point point) {
-        form.startSelection(point);
-    }
-
-    /** form */
-    void continueSelection(Point point) {
-        form.continueSelection(point);
-    }
-
-    /** form */
-    void endSelection(Point point) {
-        form.endSelection(point);
-    }
-
-    /** form */
     void moveCursor(int x, int y) {
         if (x > 50 && x < 80) {
-            form.moveCursor(x, y);
+            model.viewUpdated(this, "moveCursor", x, y);
         }
     }
 
     /** form */
     void updateGraphics() {
         if (model.displayMode == DisplayMode.EXPANDED_MODE) {
-            form.updateGraphics();
+            model.viewUpdated(this, "updateGraphics");
         }
     }
 
@@ -681,10 +828,82 @@ Debug.println("both files do not exist: " + pair.getCommonName());
     private void finishWork() {
         if (model.isMultiMode()) {
             String title = MessageFormat.format(rb.getString("frame.title.compare"), model.getLeftFilePath(), model.getRightFilePath());
-            form.setTitle(title);
+            model.viewUpdated(this, "setTitle", title);
         } else {
-            form.setTitle(rb.getString("frame.title.default"));
+            model.viewUpdated(this, "setTitle", rb.getString("frame.title.default"));
         }
+    }
+
+    /** */
+    @SwingControllerAction
+    void lsl_valueChanged(ListSelectionEvent ev) {
+        if (!ev.getValueIsAdjusting()) {
+            if (!(JList.class.cast(ev.getSource()).getSelectedValue() instanceof Pair)) {
+                return;
+            }
+            Pair current = (Pair) JList.class.cast(ev.getSource()).getSelectedValue();
+
+            setCurrent(current);
+        }
+    }
+
+    /** */
+    @SwingControllerAction
+    void lml_mouseClicked(MouseEvent ev) {
+        if (ev.getClickCount() == 2) {
+            toExpand();
+        } else if (SwingUtilities.isRightMouseButton(ev)) {
+            int x = ev.getX();
+            int y = ev.getY();
+
+            // TODO menu control, selection control
+            pagePopup(x, y);
+        }
+    }
+
+    /** */
+    @SwingControllerAction
+    void lml_mousePressed(MouseEvent ev) {
+        if (SwingUtilities.isLeftMouseButton(ev)) {
+            model.viewUpdated(this, "startSelection", ev.getPoint());
+        }
+    }
+
+    /** */
+    @SwingControllerAction
+    void lml_mouseDragged(MouseEvent ev) {
+        if (SwingUtilities.isLeftMouseButton(ev)) {
+            model.viewUpdated(this, "continueSelection", ev.getPoint());
+        }
+    }
+
+    /** */
+    @SwingControllerAction
+    void lml_mouseReleased(MouseEvent ev) {
+        if (SwingUtilities.isLeftMouseButton(ev)) {
+            model.viewUpdated(this, "endSelection", ev.getPoint());
+        }
+    }
+
+    /** */
+    @SwingControllerAction
+    void pml_mousePressed(MouseEvent ev) {
+        int x = ev.getX();
+        int y = ev.getY();
+
+        moveCursor(x, y);
+    }
+
+    /** */
+    @SwingControllerAction
+    void pal_adjustmentValueChanged(AdjustmentEvent ev) {
+        updateGraphics();
+    }
+
+    /** */
+    @SwingControllerAction
+    void windowClosing(WindowEvent ev) {
+        pageMain_close2();
     }
 }
 
