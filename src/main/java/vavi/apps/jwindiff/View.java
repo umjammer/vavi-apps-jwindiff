@@ -81,85 +81,85 @@ class View {
 
     // main view ----
 
+    static final Color diffRed = new Color(0xFF, 0xD5, 0xCC);
+    static final Color diffGreen = new Color(0xBE, 0xE6, 0xBE);
+
     /** */
     JList<Object> mainView;
 
     /** TODO 自動生成 */
-    GenericListener mainViewListener = new GenericListener() {
-        @SuppressWarnings("unchecked")
-        public void eventHappened(GenericEvent ev) {
-            String name = ev.getName();
-            if ("pageMain_close".equals(name)) {
-                pageMain_close();
-            } else if ("pageSaveListDialog".equals(name)) {
-                pageSaveListDialog();
-            } else if ("pagePopupOutline".equals(name)) {
-                pagePopupOutline((Integer) ev.getArguments()[0], (Integer) ev.getArguments()[1]);
-            } else if ("pagePopupExpanded".equals(name)) {
-                pagePopupExpanded((Integer) ev.getArguments()[0], (Integer) ev.getArguments()[1]);
-            } else if ("initCompareTargetsDialog".equals(name)) {
-                initCompareTargetsDialog((File) ev.getArguments()[0], (File) ev.getArguments()[1]);
-            } else if ("pageCompareTargetsDialog".equals(name)) {
-                pageCompareTargetsDialog();
-            } else if ("initEditorDialog".equals(name)) {
-                initEditorDialog((File) ev.getArguments()[0]);
-            } else if ("pageEditorChooser".equals(name)) {
-                pageEditorChooser();
-            } else if ("pageEditorDialog_close".equals(name)) {
-                pageEditorDialog_close();
-            } else if ("pagePatternDialog_close".equals(name)) {
-                pagePatternDialog_close();
-            } else if ("pageCompareTargetsDialog_close".equals(name)) {
-                pageCompareTargetsDialog_close();
-            } else if ("pageSaveListDialog_close".equals(name)) {
-                pageSaveListDialog_close();
-            } else if ("startSelection".equals(name)) {
-                startSelection((Point) ev.getArguments()[0]);
-            } else if ("endSelection".equals(name)) {
-                endSelection((Point) ev.getArguments()[0]);
-            } else if ("continueSelection".equals(name)) {
-                continueSelection((Point) ev.getArguments()[0]);
-            } else if ("moveCursor".equals(name)) {
-                moveCursor((Integer) ev.getArguments()[0], (Integer) ev.getArguments()[1]);
-            } else if ("updateGraphics".equals(name)) {
-                updateGraphics();
-            } else if ("findOutline".equals(name)) {
-                findOutline((Order) ev.getArguments()[0]);
-            } else if ("findExpand".equals(name)) {
-                findExpand((Order) ev.getArguments()[0]);
-            } else if ("setTitle".equals(name)) {
-                setTitle((String) ev.getArguments()[0]);
-            } else if ("pagePatternDialog".equals(name)) {
-                pagePatternDialog();
-            } else if ("displaySingleFile".equals(name)) {
-                displaySingleFile((String[]) ev.getArguments()[0]);
-            } else if ("toExpand".equals(name)) {
-                toExpand();
-            } else if ("toOutline".equals(name)) {
-                toOutline();
-            } else if ("toSelection".equals(name)) {
-                toSelection();
-            } else if ("displayException".equals(name)) {
-                displayException((Exception) ev.getArguments()[0]);
-            } else if ("setNames".equals(name)) {
-                setNames((String) ev.getArguments()[0]);
-            } else if ("setPaths".equals(name)) {
-                setPaths((String) ev.getArguments()[0]);
-            } else if ("redisplayExpandedBefore".equals(name)) {
-                redisplayExpandedBefore();
-            } else if ("redisplayOutlineAfter".equals(name)) {
-                redisplayOutlineAfter((List<Pair>) ev.getArguments()[0], (Pair) ev.getArguments()[1]);
-            } else if ("redisplayOutlineBefore".equals(name)) {
-                redisplayOutlineBefore((String) ev.getArguments()[0], (String) ev.getArguments()[1]);
-            } else if ("pageMain".equals(name)) {
-                pageMain();
-            } else if ("initMain".equals(name)) {
-                initMain((Model) ev.getArguments()[0]);
-            } else if ("updateMain".equals(name)) {
-                updateMain((List<Line>) ev.getArguments()[0]);
-            } else {
-                assert false : name;
-            }
+    GenericListener mainViewListener = ev -> {
+        String name = ev.getName();
+        if ("pageMain_close".equals(name)) {
+            pageMain_close();
+        } else if ("pageSaveListDialog".equals(name)) {
+            pageSaveListDialog();
+        } else if ("pagePopupOutline".equals(name)) {
+            pagePopupOutline((Integer) ev.getArguments()[0], (Integer) ev.getArguments()[1]);
+        } else if ("pagePopupExpanded".equals(name)) {
+            pagePopupExpanded((Integer) ev.getArguments()[0], (Integer) ev.getArguments()[1]);
+        } else if ("initCompareTargetsDialog".equals(name)) {
+            initCompareTargetsDialog((File) ev.getArguments()[0], (File) ev.getArguments()[1]);
+        } else if ("pageCompareTargetsDialog".equals(name)) {
+            pageCompareTargetsDialog();
+        } else if ("initEditorDialog".equals(name)) {
+            initEditorDialog((File) ev.getArguments()[0]);
+        } else if ("pageEditorChooser".equals(name)) {
+            pageEditorChooser();
+        } else if ("pageEditorDialog_close".equals(name)) {
+            pageEditorDialog_close();
+        } else if ("pagePatternDialog_close".equals(name)) {
+            pagePatternDialog_close();
+        } else if ("pageCompareTargetsDialog_close".equals(name)) {
+            pageCompareTargetsDialog_close();
+        } else if ("pageSaveListDialog_close".equals(name)) {
+            pageSaveListDialog_close();
+        } else if ("startSelection".equals(name)) {
+            startSelection((Point) ev.getArguments()[0]);
+        } else if ("endSelection".equals(name)) {
+            endSelection((Point) ev.getArguments()[0]);
+        } else if ("continueSelection".equals(name)) {
+            continueSelection((Point) ev.getArguments()[0]);
+        } else if ("moveCursor".equals(name)) {
+            moveCursor((Integer) ev.getArguments()[0], (Integer) ev.getArguments()[1]);
+        } else if ("updateGraphics".equals(name)) {
+            updateGraphics();
+        } else if ("findOutline".equals(name)) {
+            findOutline((Order) ev.getArguments()[0]);
+        } else if ("findExpand".equals(name)) {
+            findExpand((Order) ev.getArguments()[0]);
+        } else if ("setTitle".equals(name)) {
+            setTitle((String) ev.getArguments()[0]);
+        } else if ("pagePatternDialog".equals(name)) {
+            pagePatternDialog();
+        } else if ("displaySingleFile".equals(name)) {
+            displaySingleFile((String[]) ev.getArguments()[0]);
+        } else if ("toExpand".equals(name)) {
+            toExpand();
+        } else if ("toOutline".equals(name)) {
+            toOutline();
+        } else if ("toSelection".equals(name)) {
+            toSelection();
+        } else if ("displayException".equals(name)) {
+            displayException((Exception) ev.getArguments()[0]);
+        } else if ("setNames".equals(name)) {
+            setNames((String) ev.getArguments()[0]);
+        } else if ("setPaths".equals(name)) {
+            setPaths((String) ev.getArguments()[0]);
+        } else if ("redisplayExpandedBefore".equals(name)) {
+            redisplayExpandedBefore();
+        } else if ("redisplayOutlineAfter".equals(name)) {
+            redisplayOutlineAfter((List<Pair>) ev.getArguments()[0], (Pair) ev.getArguments()[1]);
+        } else if ("redisplayOutlineBefore".equals(name)) {
+            redisplayOutlineBefore((String) ev.getArguments()[0], (String) ev.getArguments()[1]);
+        } else if ("pageMain".equals(name)) {
+            pageMain();
+        } else if ("initMain".equals(name)) {
+            initMain((Model) ev.getArguments()[0]);
+        } else if ("updateMain".equals(name)) {
+            updateMain((List<Line>) ev.getArguments()[0]);
+        } else {
+            assert false : name;
         }
     };
 
@@ -687,10 +687,10 @@ Debug.println(mainView.getSelectedIndex());
                 g.setColor(Color.black);
                 g.drawRect(BR, y, BW, h);
             } else if (flag == Line.Type.DELETED) {
-                g.setColor(Color.red);
+                g.setColor(View.diffRed);
                 g.fillRect(BR, y, BW, h);
             } else if (flag == Line.Type.INSERTED) {
-                g.setColor(Color.yellow);
+                g.setColor(View.diffGreen);
                 g.fillRect(BR, y, BW, h);
             }
         }
@@ -709,7 +709,7 @@ Debug.println(mainView.getSelectedIndex());
             int y = Math.round((float) first / size * height);
             int h = Math.round((float) (last - first + 1) / size * height);
 
-            g.setColor(Color.blue);
+            g.setColor(UIManager.getColor("Component.accentColor"));
             g.fillRect(CX, y, CW, h);
         }
 
@@ -856,7 +856,7 @@ Debug.println(mainView.getSelectedIndex());
 //      panel.setBackground(Color.cyan);
         base.add(panel, BorderLayout.NORTH);
 
-        int fontSize = Integer.valueOf(rb.getString("panel.jWinDiff.font.size"));
+        int fontSize = Integer.parseInt(rb.getString("panel.jWinDiff.font.size"));
         mainView = new JList<>();
         mainView.setFont(new Font(rb.getString("panel.jWinDiff.font.name"), Font.PLAIN, fontSize));
 

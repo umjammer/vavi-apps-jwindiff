@@ -152,10 +152,8 @@ class SwingController {
     /**
      * abort (file)
      */
-    ActionListener abortAction = new ActionListener() {
-        public void actionPerformed(ActionEvent ev) {
-            // TODO can't yet interrupt
-        }
+    ActionListener abortAction = ev -> {
+        // TODO can't yet interrupt
     };
 
     /**
@@ -212,7 +210,7 @@ class SwingController {
             if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
                 return;
             }
-            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+            Pair[] pairs = selection.toArray(new Pair[0]);
             controller.copyFiles(pairs);
         }
     };
@@ -262,7 +260,7 @@ class SwingController {
             if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
                 return;
             }
-            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+            Pair[] pairs = selection.toArray(new Pair[0]);
             controller.rescan(pairs);
         }
     };
@@ -348,7 +346,7 @@ class SwingController {
             if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
                 return;
             }
-            Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+            Pair[] pairs = selection.toArray(new Pair[0]);
             controller.toggleSelectedMark(pairs);
         }
     };

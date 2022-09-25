@@ -10,7 +10,6 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -27,7 +26,7 @@ import vavi.apps.jwindiff.Model.DisplayMode;
 import vavi.apps.jwindiff.Model.ShowExpandMode;
 import vavi.apps.jwindiff.Model.ShowNumMode;
 import vavi.util.Debug;
-import vavi.util.gnu.DiffUtil;
+import vavi.util.diff.DiffUtil;
 
 
 /**
@@ -186,7 +185,7 @@ Debug.println(Level.SEVERE, e);
      */
     void displaySingleFile(File file) throws IOException {
 // Debug.println("here");
-        String lines[] = DiffUtil.readLines(file);
+        String[] lines = DiffUtil.readLines(file);
         form.displaySingleFile(lines);
     }
 
@@ -247,7 +246,7 @@ Debug.println(Level.SEVERE, e);
      */
     private void saveOptions() {
         try {
-            model.serialize(new FileOutputStream(configFile));
+            model.serialize(Files.newOutputStream(configFile.toPath()));
         } catch (IOException e) {
 Debug.println(Level.SEVERE, e);
         }
@@ -265,7 +264,7 @@ Debug.println(Level.SEVERE, e);
      */
     void serializePairs(File file) {
         try {
-            OutputStream os = new FileOutputStream(file);
+            OutputStream os = Files.newOutputStream(file.toPath());
             model.serializePairs(os);
             os.close();
         } catch (IOException e) {
@@ -413,7 +412,8 @@ Debug.println(e);
             throw new IllegalArgumentException(rb.getString("message.usage"));
         }
 
-        for (int i = 0; i < args.length; i++) {
+top:    for (int i = 0; i < args.length; i++) {
+Debug.println(i + ": arg: " + args[i]);
             if ("-1".equals(args[i])) {
                 i++;
                 while (i < args.length) {
@@ -423,7 +423,9 @@ Debug.println(e);
                         model.getLeftFiles().add(file);
 Debug.println(i + ": add left: " + file);
                     } else {
-                        continue;
+Debug.println(i + ": not exists: " + file);
+                        i--;
+                        continue top;
                     }
                     i++;
                 }
@@ -436,7 +438,9 @@ Debug.println(i + ": add left: " + file);
                         model.getRightFiles().add(file);
 Debug.println(i + ": add right: " + file);
                     } else {
-                        continue;
+Debug.println(i + ": not exists: " + file);
+                        i--;
+                        continue top;
                     }
                     i++;
                 }

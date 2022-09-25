@@ -6,8 +6,6 @@
 
 package vavi.apps.jwindiff;
 
-import vavi.util.Debug;
-
 
 /**
  * Java version of windiff.
@@ -65,14 +63,8 @@ public class JWinDiff {
     /**
      * The program entry point.
      */
-    public static void main(String[] args) {
-        try {
-            new JWinDiff(args);
-        } catch (Exception e) {
-Debug.printStackTrace(e);
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+    public static void main(String[] args) throws Exception {
+        new JWinDiff(args);
     }
 }
 

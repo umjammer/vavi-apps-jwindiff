@@ -41,167 +41,177 @@ class Form {
 
     //----
 
-    /** page @see {@link View#pageMain_close()} */
+    /** page
+     * @see View#pageMain_close() */
     void pageMain_close() {
         viewUpdated(this, "pageMain_close");
     }
 
-    /** page @see {@link View#pageSaveListDialog()} */
+    /** page
+     * @see View#pageSaveListDialog() */
     void pageSaveFile() {
         viewUpdated(this, "pageSaveListDialog");
     }
 
-    /** page @see {@link View#pagePopupOutline(int, int)} */
+    /** page
+     * @see View#pagePopupOutline(int, int) */
     void pagePopupOutline(int x, int y) {
         viewUpdated(this, "pagePopupOutline", x, y);
     }
 
-    /** page @see {@link View#pagePopupExpanded(int, int)} */
+    /** page
+     * @see View#pagePopupExpanded(int, int) */
     void pagePopupExpanded(int x, int y) {
         viewUpdated(this, "pagePopupExpanded", x, y);
     }
 
-    /** @see {@link View#initCompareTargetsDialog(File, File)} */
+    /** @see View#initCompareTargetsDialog(File, File) */
     void initCompareTargetsDialog(File left, File right) {
         viewUpdated(this, "initCompareTargetsDialog", left, right);
     }
 
-    /** page @see {@link View#pageCompareTargetsDialog()} */
+    /** page
+     * @see View#pageCompareTargetsDialog() */
     void pageCompareTargetsDialog() {
         viewUpdated(this, "pageCompareTargetsDialog");
     }
 
-    /** @see {@link View#initEditorDialog(File)} */
+    /** @see View#initEditorDialog(File) */
     void initEditorDialog(File file) {
         viewUpdated(this, "initEditorDialog", file);
     }
 
-    /** page @see {@link View#pageEditorChooser()} */
+    /** page
+     * @see View#pageEditorChooser() */
     void pageEditorChooser() {
         viewUpdated(this, "pageEditorChooser");
     }
 
-    /** page @see {@link View#pageEditorDialog_close()} */
+    /** page
+     * @see View#pageEditorDialog_close() */
     void pageEditorDialog_close() {
         viewUpdated(this, "pageEditorDialog_close");
     }
 
-    /** page @see {@link View#pagePatternDialog_close()} */
+    /** page
+     * @see View#pagePatternDialog_close() */
     void pagePatternDialog_close() {
         viewUpdated(this, "pagePatternDialog_close");
     }
 
-    /** page @see {@link View#pageCompareTargetsDialog_close()} */
+    /** page
+     * @see View#pageCompareTargetsDialog_close() */
     void pageTargetsDialog_close() {
         viewUpdated(this, "pageCompareTargetsDialog_close");
     }
 
-    /** page @see {@link View#pageSaveListDialog_close()} */
+    /** page
+     * @see View#pageSaveListDialog_close() */
     void pageSaveListDialog_close() {
         viewUpdated(this, "pageSaveListDialog_close");
     }
 
-    /** @see {@link View#startSelection(Point)} */
+    /** @see View#startSelection(Point) */
     void startSelection(Point point) {
         viewUpdated(this, "startSelection", point);
     }
 
-    /** @see {@link View#endSelection(Point)} */
+    /** @see View#endSelection(Point) */
     void endSelection(Point point) {
         viewUpdated(this, "endSelection", point);
     }
 
-    /** @see {@link View#continueSelection(Point)} */
+    /** @see View#continueSelection(Point) */
     void continueSelection(Point point) {
         viewUpdated(this, "continueSelection", point);
     }
 
-    /** @see {@link View#moveCursor(int, int)} */
+    /** @see View#moveCursor(int, int) */
     void moveCursor(int x, int y) {
         viewUpdated(this, "moveCursor", x, y);
     }
 
-    /** @see {@link View#updateGraphics()} */
+    /** @see View#updateGraphics() */
     void updateGraphics() {
         viewUpdated(this, "updateGraphics");
     }
 
-    /** @see {@link View#findOutline(Order)} */
+    /** @see View#findOutline(Order) */
     void findOutline(Order order) {
         viewUpdated(this, "findOutline", order);
     }
 
-    /** @see {@link View#findExpand(Order)} */
+    /** @see View#findExpand(Order) */
     void findExpand(Order order) {
         viewUpdated(this, "findExpand", order);
     }
 
-    /** @see {@link View#setTitle(String)} */
+    /** @see View#setTitle(String) */
     void setTitle(String title) {
         viewUpdated(this, "setTitle", title);
     }
 
-    /** @see {@link View#pagePatternDialog()} */
+    /** @see View#pagePatternDialog() */
     void markPattern() {
         viewUpdated(this, "pagePatternDialog");
     }
 
-    /** @see {@link View#displaySingleFile(String[])} */
+    /** @see View#displaySingleFile(String[]) */
     void displaySingleFile(String[] lines) {
         viewUpdated(this, "displaySingleFile", (Object) lines);
     }
 
-    /** @see {@link View#toExpand()} */
+    /** @see View#toExpand() */
     void toExpand() {
         viewUpdated(this, "toExpand");
     }
 
-    /** @see {@link View#toOutline()} */
+    /** @see View#toOutline() */
     void toOutline() {
         viewUpdated(this, "toOutline");
     }
 
-    /** @see {@link View#toSelection()} */
+    /** @see View#toSelection() */
     void toSelection() {
         viewUpdated(this, "toSelection");
     }
 
-    /** @see {@link View#displayException(Exception)} */
+    /** @see View#displayException(Exception) */
     void displayException(IOException e) {
         viewUpdated(this, "displayException", e);
     }
 
-    /** @see {@link View#setNames(String)} */
+    /** @see View#setNames(String) */
     void setNames(String name) {
         viewUpdated(this, "setNames", name);
     }
 
-    /** @see {@link View#setPaths(String)} */
+    /** @see View#setPaths(String) */
     void setPaths(String path) {
         viewUpdated(this, "setPaths", path);
     }
 
-    /** @see {@link View#redisplayExpandedBefore()} */
+    /** @see View#redisplayExpandedBefore() */
     void redisplayExpandedBefore() {
         viewUpdated(this, "redisplayExpandedBefore");
     }
 
-    /** @see {@link View#redisplayOutlineAfter(List, Pair)} */
+    /** @see View#redisplayOutlineAfter(List, Pair) */
     void redisplayOutlineAfter(List<Pair> pairs, Pair current) {
         viewUpdated(this, "redisplayOutlineAfter", pairs, current);
     }
 
-    /** @see {@link View#redisplayOutlineBefore(String, String)} */
+    /** @see View#redisplayOutlineBefore(String, String) */
     void redisplayOutlineBefore(String leftFilePath, String rightFilePath) {
         viewUpdated(this, "redisplayOutlineBefore", leftFilePath, rightFilePath);
     }
 
-    /** @see {@link View#pageMain()} */
+    /** @see View#pageMain() */
     void pageMain() {
         viewUpdated(this, "pageMain");
     }
 
-    /** @see {@link View#initMain(Model)} */
+    /** @see View#initMain(Model) */
     void initMain(Model model) {
         viewUpdated(this, "initMain", model);
     }
