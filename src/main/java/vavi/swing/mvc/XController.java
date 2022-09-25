@@ -36,7 +36,7 @@ public @interface XController {
     /** */
     class Util {
 
-        private static Logger logger = Logger.getLogger(Util.class.getName());
+        private static final Logger logger = Logger.getLogger(Util.class.getName());
 
         private Util() {
         }
@@ -154,7 +154,7 @@ public @interface XController {
 
         /** */
         private static void bindViewAction(String viewAction, Field component, Object view) {
-            AbstractButton.class.cast(BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
+            ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
                 try {
                     Method method = BeanUtil.getMethodByNameOf(view.getClass(), viewAction); // TODO limit @XViewAction
 logger.info(view.getClass().getSimpleName() + "." + viewAction); 
@@ -177,17 +177,17 @@ logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev
 //logger.info(controller.getClass().getSimpleName() + "." + method.getName() + ", " + action); 
                 if (method.getName().equals(action)) { // TODO cache
                     if (method.getParameterCount() == 0) {
-                        AbstractButton.class.cast(BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
+                        ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
                             BeanUtil.invoke(method, controller);
                         });
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + controller.getClass().getSimpleName() + "." + action + "()"); 
                     } else if (method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(ActionEvent.class)) {
-                        AbstractButton.class.cast(BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
+                        ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
                             BeanUtil.invoke(method, controller, ev);
                         });
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + controller.getClass().getSimpleName() + "." + action + "(ev)"); 
                     } else {
-                        AbstractButton.class.cast(BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
+                        ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
                             String[] viewParams = SwingControllerAction.Util.getView(method);
                             Object[] args = new Object[viewParams.length];
                             int i = 0;

@@ -36,7 +36,7 @@ public @interface XView {
     /** */
     class Util {
 
-        private static Logger logger = Logger.getLogger(Util.class.getName());
+        private static final Logger logger = Logger.getLogger(Util.class.getName());
 
         private Util() {
         }
@@ -98,6 +98,7 @@ public @interface XView {
         /**
          * Entry point.
          */
+        @SuppressWarnings({"unchecked", "rawtypes",})
         public static void bind(Object bean, GenericEvent event) {
             // TODO check super classes
             XView xview = bean.getClass().getAnnotation(XView.class);
@@ -109,16 +110,16 @@ boolean done = false;
             for (Field field : getXViewActionFields(bean)) {
                 if (field.getName().equals(event.getName())) { // TODO cache
                     if (field.getType().equals(Consumer.class)) {
-                        Consumer.class.cast(BeanUtil.getFieldValue(field, bean)).accept(event.getArguments()[0]);
+                        ((Consumer) BeanUtil.getFieldValue(field, bean)).accept(event.getArguments()[0]);
 done = true;
 logger.info(field.getName() + ": " + field.getType().getSimpleName());
                     } else if (field.getType().equals(BiConsumer.class)) {
-                        BiConsumer.class.cast(BeanUtil.getFieldValue(field, bean)).accept(event.getArguments()[0],
-                                                                                          event.getArguments()[1]);
+                        ((BiConsumer) BeanUtil.getFieldValue(field, bean)).accept(event.getArguments()[0],
+                                                                                  event.getArguments()[1]);
 done = true;
 logger.info(field.getName() + ": " + field.getType().getSimpleName());
                     } else if (field.getType().equals(Runnable.class)) {
-                        Runnable.class.cast(BeanUtil.getFieldValue(field, bean)).run();
+                        ((Runnable) BeanUtil.getFieldValue(field, bean)).run();
 done = true;
 logger.info(field.getName() + ": " + field.getType().getSimpleName());
                     } else {

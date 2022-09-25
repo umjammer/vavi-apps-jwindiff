@@ -15,6 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
@@ -66,7 +67,7 @@ public @interface SwingComponent {
      */
     class Util {
 
-        private static Logger logger = Logger.getLogger(Util.class.getName());
+        private static final Logger logger = Logger.getLogger(Util.class.getName());
 
         private Util() {
         }
@@ -111,7 +112,7 @@ public @interface SwingComponent {
             }
         }
 
-        /** */
+        /** @return nullable */
         private static Method getMethod(Object controller, String name) {
             for (Method method : XController.Util.getSwingControllerActionMethods(controller)) {
                 if (method.getName().equals(name)) {
@@ -133,12 +134,12 @@ public @interface SwingComponent {
             if (!target.listSelectionListener().isEmpty()) {
                 Method method = getMethod(controller, target.listSelectionListener());
                 if (method.getParameterCount() == 0) {
-                    JList.class.cast(BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> {
+                    ((JList<?>) BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> {
                         BeanUtil.invoke(method, controller);
                     });
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + target.listSelectionListener() + "()");
                 } else {
-                    JList.class.cast(BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> {
+                    ((JList<?>) BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> {
                         BeanUtil.invoke(method, controller, ev);
                     });
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + target.listSelectionListener() + "(ev)");
@@ -158,7 +159,7 @@ logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev
             Object subComponent = getSub(view, component);
             if (!target.adjustmentListener().isEmpty()) {
                 Method method = getMethod(controller, target.adjustmentListener());
-                JScrollBar.class.cast(subComponent).addAdjustmentListener(ev -> {
+                ((JScrollBar) subComponent).addAdjustmentListener(ev -> {
                     BeanUtil.invoke(method, controller, ev);
                 });
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + (subComponent.getClass().equals(component.getDeclaringClass()) ? "" : "." + subComponent.getClass().getSimpleName()) + " = ev -> " + view.getClass().getSimpleName() + "." + target.adjustmentListener() + "(ev)");
@@ -182,10 +183,10 @@ logger.info(view.getClass().getSimpleName() + "." + component.getName() + (subCo
                         BeanUtil.invoke(method_windowClosing, controller, ev);
                     }
                 };
-                if (JWindow.class.isInstance(value)) {
-                    JWindow.class.cast(value).addWindowListener(windowAdapter);
-                } else if (JFrame.class.isInstance(value)) {
-                    JFrame.class.cast(value).addWindowListener(windowAdapter);
+                if (value instanceof JWindow) {
+                    ((JWindow) value).addWindowListener(windowAdapter);
+                } else if (value instanceof JFrame) {
+                    ((JFrame) value).addWindowListener(windowAdapter);
                 } else {
                     throw new IllegalStateException(value.getClass().getName());
                 }
@@ -232,8 +233,8 @@ logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev
                         }
                     }
                 };
-                JComponent.class.cast(BeanUtil.getFieldValue(component, view)).addMouseListener(mil);
-                JComponent.class.cast(BeanUtil.getFieldValue(component, view)).addMouseMotionListener(mil);
+                ((JComponent) BeanUtil.getFieldValue(component, view)).addMouseListener(mil);
+                ((JComponent) BeanUtil.getFieldValue(component, view)).addMouseMotionListener(mil);
 if (!target.mouseClicked().isEmpty()) logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + target.mouseClicked() + "(ev)");
 if (!target.mouseReleased().isEmpty()) logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + target.mouseReleased() + "(ev)");
 if (!target.mouseDragged().isEmpty()) logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + target.mouseDragged() + "(ev)");
