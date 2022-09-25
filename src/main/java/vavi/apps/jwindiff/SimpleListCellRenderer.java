@@ -11,9 +11,9 @@ import java.awt.FontMetrics;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
+import javax.swing.UIManager;
 
 import vavi.apps.jwindiff.Model.ShowExpandMode;
 import vavi.apps.jwindiff.Model.ShowNumMode;
@@ -71,7 +71,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         }
         setOpaque(true);
 
-        String s = new String();
+        String s = "";
         if (!model.getShowNumMode().equals(ShowNumMode.none)) {
             s += toInt5(index + 1);
         }
@@ -123,7 +123,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         }
         setOpaque(true);
 
-        String s = new String();
+        String s = "";
 //      String s = new String(toInt5(index) + " "); // TODO debug
         if (!model.getShowNumMode().equals(ShowNumMode.none) &&
             !(model.getShowExpandMode().equals(ShowExpandMode.left) && line.getFlag() == Line.Type.INSERTED) &&
@@ -156,13 +156,13 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO */
-    private final String toInt5(int i) {
-        String s = "    " + String.valueOf(i);
+    private String toInt5(int i) {
+        String s = "    " + i;
         return s.substring(s.length() - 5);
     }
 
     /** TODO */
-    private final String toStringN(String v, int w, FontMetrics fontMetrics) {
+    private String toStringN(String v, int w, FontMetrics fontMetrics) {
         int width = fontMetrics.stringWidth(v);
         int n = 1;
         String s;
@@ -184,7 +184,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO */
-    private final String spaceN(int n) {
+    private String spaceN(int n) {
 //Debug.println(n);
         StringBuilder sb = new StringBuilder(n);
         for (int i = 0; i < n; i++) {
@@ -194,7 +194,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO 漢字等の文字幅に対応していない */
-    private final String replaceTabToSpace(String s) {
+    private String replaceTabToSpace(String s) {
         int p = 0;
         while (true) {
             p = s.indexOf('\t', p);

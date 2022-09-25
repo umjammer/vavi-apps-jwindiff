@@ -872,7 +872,7 @@ Debug.println(mainView.getSelectedIndex());
 //      panel.setBackground(Color.cyan);
         base.add(panel, BorderLayout.NORTH);
 
-        int fontSize = Integer.valueOf(rb.getString("panel.jWinDiff.font.size"));
+        int fontSize = Integer.parseInt(rb.getString("panel.jWinDiff.font.size"));
         mainView = new JList<>();
         mainView.setFont(new Font(rb.getString("panel.jWinDiff.font.name"), Font.PLAIN, fontSize));
 Debug.println(mainView.getFont());
@@ -1293,12 +1293,12 @@ Debug.println(mainView.getFont());
             break;
         }
 
-//Debug.println("isIgnoreBlanks: " + model.isIgnoreBlanks());
-//Debug.println("isShowIdentical: " + model.isShowIdentical());
-//Debug.println("isShowLeft: " + model.isShowLeft());
-//Debug.println("isShowRight: " + model.isShowRight());
-//Debug.println("isShowDifferent: " + model.isShowDifferent());
-//Debug.println("isHideMarked: " + model.isHideMarked());
+Debug.println("isIgnoreBlanks: " + model.isIgnoreBlanks());
+Debug.println("isShowIdentical: " + model.isShowIdentical());
+Debug.println("isShowLeft: " + model.isShowLeft());
+Debug.println("isShowRight: " + model.isShowRight());
+Debug.println("isShowDifferent: " + model.isShowDifferent());
+Debug.println("isHideMarked: " + model.isHideMarked());
         ignoreBlanks.setSelected(model.isIgnoreBlanks());
         showIdentical.setSelected(model.isShowIdentical());
         showLeft.setSelected(model.isShowLeft());

@@ -25,7 +25,7 @@ class Line {
         /** */
         MOVEDTO,
         /** */
-        MOVEDFROM;
+        MOVEDFROM
     }
 
     /** */
