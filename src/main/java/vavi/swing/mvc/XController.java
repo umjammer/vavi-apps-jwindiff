@@ -124,6 +124,10 @@ public @interface XController {
 
         /**
          * Entry point.
+         *
+         * 1. {@link #bindAction}
+         * 2. {@link #bindViewAction}
+         * 3. adding controller (swing listeners) to view (swing components).
          */
         public static void bind(Object controller, Object view) {
             // TODO check super classes
@@ -152,7 +156,7 @@ public @interface XController {
             }
         }
 
-        /** */
+        /** 2. view.component.addActionListener(e -> view.viewAction()) */
         private static void bindViewAction(String viewAction, Field component, Object view) {
             ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
                 try {
@@ -166,10 +170,16 @@ logger.info(view.getClass().getSimpleName() + "." + viewAction);
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + viewAction + "()");
         }
 
-        /** */
+        /**
+         * 1.1   WIP controller#action
+         * 1.2.1 view.component.addActionListener(e -> controller.action())
+         *     2 view.component.addActionListener(controller::action)
+         *     3 view.component.addActionListener(e -> controller.action(@SwingControllerAction.view...))
+         */
         private static void bindAction(String action, Field component, Object controller, Object view) {
             for (Field field : getSwingControllerActionFields(controller)) {
                 if (field.getName().equals(action)) { // TODO cache
+logger.warning("wip: " + action);
                 }
             }
 

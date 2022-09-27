@@ -41,7 +41,7 @@ import vavi.util.event.GenericSupport;
  */
 class Model {
 
-    /** view listener */
+    /** view listener TODO remove, use proxy? */
     private GenericSupport gs = new GenericSupport();
 
     /** */
@@ -320,7 +320,7 @@ new Exception().printStackTrace();
     void rescan(Pair[] pairs) {
         for (Pair pair : pairs) {
             pair.rescan();
-            Debug.println(pair.getCommonName());
+Debug.println(pair.getCommonName());
         }
     }
 
@@ -463,7 +463,7 @@ new Exception().printStackTrace();
     /** */
     private static final ResourceBundle rb = ResourceBundle.getBundle("JWinDiffResources", Locale.getDefault());
 
-    /** */
+    /** TODO use prefs */
     void serializePairs(OutputStream os) throws IOException {
 
         BufferedWriter w = new BufferedWriter(new OutputStreamWriter(os));
@@ -549,7 +549,7 @@ new Exception().printStackTrace();
         return pair.getCommonName() + "," + sdf.format(new Date(pair.left.lastModified())) + "," + pair.left.length() + "," + sdf.format(new Date(pair.right.lastModified())) + "," + pair.right.length();
     }
 
-    /** */
+    /** TODO use prefs */
     void serialize(OutputStream os) throws IOException {
 
         Properties props = new Properties();

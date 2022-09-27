@@ -36,7 +36,7 @@ public @interface SwingControllerAction {
         }
 
         /**
-         * @param field {@link Property} annotated
+         * @param field {@link SwingControllerAction} annotated
          */
         public static String[] getView(Field field) {
             SwingControllerAction target = field.getAnnotation(SwingControllerAction.class);
@@ -48,7 +48,7 @@ public @interface SwingControllerAction {
         }
 
         /**
-         * @param method {@link Property} annotated
+         * @param method {@link SwingControllerAction} annotated
          */
         public static String[] getView(Method method) {
             SwingControllerAction target = method.getAnnotation(SwingControllerAction.class);

@@ -68,6 +68,8 @@ class Controller {
 
     /**
      * Rescans the currently selected file.
+     * TODO this method seems to be in model but param is view-model
+     * @param pairs comes from view-model (selected)
      * @controller
      */
     void rescan(Pair[] pairs) {
@@ -585,6 +587,10 @@ Debug.printStackTrace(e);
         }
     }
 
+    /**
+     * TODO this method seems to be in model but param is view-model
+     * @param pairs comes from model-view
+     */
     void copyFiles(Pair[] pairs) {
         for (Pair pair : pairs) {
 Debug.print(pair);
@@ -646,7 +652,7 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
             return;
         }
-        Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+        Pair[] pairs = selection.toArray(new Pair[0]);
         copyFiles(pairs);
     }
 
@@ -674,7 +680,7 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
             return;
         }
-        Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+        Pair[] pairs = selection.toArray(new Pair[0]);
         rescan(pairs);
     }
 
@@ -734,7 +740,7 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
             return;
         }
-        Pair[] pairs = selection.toArray(new Pair[selection.size()]);
+        Pair[] pairs = selection.toArray(new Pair[0]);
         toggleSelectedMark(pairs);
     }
 
@@ -842,10 +848,10 @@ Debug.println("both files do not exist: " + pair.getCommonName());
     @SwingControllerAction
     void lsl_valueChanged(ListSelectionEvent ev) {
         if (!ev.getValueIsAdjusting()) {
-            if (!(JList.class.cast(ev.getSource()).getSelectedValue() instanceof Pair)) {
+            if (!(((JList<?>) ev.getSource()).getSelectedValue() instanceof Pair)) {
                 return;
             }
-            Pair current = (Pair) JList.class.cast(ev.getSource()).getSelectedValue();
+            Pair current = (Pair) ((JList<?>) ev.getSource()).getSelectedValue();
 
             setCurrent(current);
         }

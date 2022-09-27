@@ -12,8 +12,8 @@ import java.util.List;
 
 import vavi.apps.jwindiff.Model.ShowExpandMode;
 import vavi.apps.jwindiff.Model.ShowNumMode;
-import  vavi.util.diff.Diff;
-import  vavi.util.diff.DiffUtil;
+import vavi.util.diff.Diff;
+import vavi.util.diff.DiffUtil;
 
 
 /**

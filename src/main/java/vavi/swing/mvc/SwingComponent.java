@@ -45,18 +45,25 @@ public @interface SwingComponent {
     /** view method */
     String view() default "";
 
+    /** supported listener 4.1 */
     String mouseClicked() default "";
 
+    /** supported listener 4.2 */
     String mouseReleased() default "";
 
+    /** supported listener 4.3 */
     String mouseDragged() default "";
 
+    /** supported listener 4.4 */
     String mousePressed() default "";
 
+    /** supported listener 1 */
     String listSelectionListener() default "";
 
+    /** supported listener 2 */
     String adjustmentListener() default "";
 
+    /** supported listener 3 */
     String windowClosing() default "";
 
     /** bind to sub component */
@@ -97,6 +104,7 @@ public @interface SwingComponent {
         }
 
         /**
+         * get a sub component belongs to the view.component.
          * @param component {@link SwingComponent} annotated
          */
         private static Object getSub(Object view, Field component) {
@@ -242,7 +250,11 @@ if (!target.mousePressed().isEmpty()) logger.info(view.getClass().getSimpleName(
             }
         }
 
-        /** */
+        /**
+         * currently 4 listener types are supported
+         *
+         * view.component.addFooLister(controller)
+         */
         public static void addListeners(Object controller, Object view, Field component) {
             setListSelectionListener(controller, view, component);
             setAdjustmentListener(controller, view, component);

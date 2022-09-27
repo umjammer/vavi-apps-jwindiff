@@ -97,6 +97,11 @@ public @interface XView {
 
         /**
          * Entry point.
+         * 1.1 bean#event.name = bean.@XViewAction-method(event.arg[0])
+         * 1.2 bean#event.name = bean.@XViewAction-method(event.arg[0], event.arg[1])
+         * 1.3 bean.@XViewAction-method()
+         * 2.1 bean#event.name(event.arg[])
+         * 2.2 bean#event.name(event.arg...)
          */
         @SuppressWarnings({"unchecked", "rawtypes",})
         public static void bind(Object bean, GenericEvent event) {

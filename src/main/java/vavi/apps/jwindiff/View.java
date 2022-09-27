@@ -446,7 +446,7 @@ Debug.println(mainView.getSelectedIndex());
      */
     @XViewAction
     void pageSaveListDialog() {
-        // TODO model から取るべきか？
+        // TODO should use model instead of view-model?
         hasIdentical.setSelected(showIdentical.isSelected());
         hasDifferent.setSelected(showDifferent.isSelected());
         hasLeft.setSelected(showLeft.isSelected());
@@ -630,7 +630,7 @@ Debug.println(mainView.getSelectedIndex());
             int first = -1;
 // Debug.println("----");
             while (i < mainView.getModel().getSize()) {
-                // TODO かっこ悪い
+                // TODO gross
                 if (!(mainView.getModel().getElementAt(0) instanceof Line)) {
                     return;
                 }
@@ -803,7 +803,7 @@ Debug.println(mainView.getSelectedIndex());
     @SwingComponent(action = "toOutline")
     JMenuItem outlineMenuItem;
 
-    /** 使い回しはできない */
+    /** a menuItem instance cannot be reused */
     @SwingComponent(action = "prevAction")
     JMenuItem prevMenuItem2;
     /** */
