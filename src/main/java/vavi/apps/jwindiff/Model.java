@@ -227,7 +227,7 @@ class Model {
      * option
      */
     public void setShowDifferent(boolean showDifferent) {
-new Exception().printStackTrace();
+new Exception("*** DUMMY ***").printStackTrace();
         this.showDifferent = showDifferent;
     }
 

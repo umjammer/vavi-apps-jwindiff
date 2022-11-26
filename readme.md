@@ -5,29 +5,29 @@
 
 # JWinDiff
 
-JWinDiff のクラスを提供します．
+🐣 Incubation for swing bindings.
 
 ## TODO
 
- * ~~JFileChooserTextField の TextField を CombpBox 化~~
- * ~~ヒストリ付 ComboBox~~
- * ~~ComboBox にポップアップメニュー~~
- * ヒストリのセーブ
+ * ~~change JFileChooserTextField's TextField to ComboBox~~
+ * ~~ComboBox w/ history~~
+ * ~~popup menu for ComboBox~~
+ * saving history
  * ~~JFontChooser~~
- * ~~ディレクトリのソート~~
- * ~~ポップアップメニュー~~
- * JCheckBoxMenuItem と普通の JMeniItem のアラインメント → [EmptyIcon.java](C:\tmp\111\justsystem\ark11src\jp\co\justsystem\uiparts\EmptyIcon.java)
- * InputMap [see](http://www.hcn.zaq.ne.jp/no-ji/reseach/20000206.htm)
+ * ~~directory sorting~~
+ * ~~opoup menu~~
+ * alignment for JCheckBoxMenuItem and normal JMeniItem → [EmptyIcon.java](justsystem/ark11src/jp/co/justsystem/uiparts/EmptyIcon.java)
+ * InputMap [see](https://web.archive.org/web/20090110193923/http://www.hcn.zaq.ne.jp/no-ji/reseach/20000206.htm)
  * Moved line
- * Left ファイル Right ファイルのグラフィックを分ける
- * ~~正規表現マッチが微妙に違う~~
- * ダイアログのデフォルトフォーカス
- * デフォルトボタンも微妙に動作が違う
- * リストをテーブルに
- * ~~JFileChooserHistoryComboBox へのドラッグアンドドロップ [参考](http://www5.big.or.jp/~tera/Labo/Java2/j2dnd.html)~~
- * MVC 完全分離
+ * separate graphics Left files and Right files
+ * ~~matching regex is something wrong~~
+ * default focus for a dialog
+ * default button behaviour is something wrong
+ * list to table
+ * ~~DnD to JFileChooserHistoryComboBox [Refference](https://web.archive.org/web/20010127050300/http://www5.big.or.jp/~tera/Labo/Java2/j2dnd.html)~~
+ * MVC separation perfectly
 
 ## Tech Know
 
- * JPopupMenu がうまくいってなかったのはたぶん[こいつ](http://developer.java.sun.com/developer/bugParade/bugs/4632782.html)のせい
- * File#getCanonicalPath はめっちゃ重い
+ * JPopupMenu didn't work because of [this](http://developer.java.sun.com/developer/bugParade/bugs/4632782.html)
+ * File#getCanonicalPath is huge cost

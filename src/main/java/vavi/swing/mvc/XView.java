@@ -46,8 +46,8 @@ public @interface XView {
          */
         public static Set<Field> getXViewActionFields(Object bean) {
             //
-            XView propsEntity = bean.getClass().getAnnotation(XView.class);
-            if (propsEntity == null) {
+            XView annotation = bean.getClass().getAnnotation(XView.class);
+            if (annotation == null) {
                 throw new IllegalArgumentException("bean is not annotated with @XView");
             }
 
@@ -73,8 +73,8 @@ public @interface XView {
          */
         public static Set<Method> getXViewActionMethods(Object bean) {
             //
-            XView propsEntity = bean.getClass().getAnnotation(XView.class);
-            if (propsEntity == null) {
+            XView annotation = bean.getClass().getAnnotation(XView.class);
+            if (annotation == null) {
                 throw new IllegalArgumentException("bean is not annotated with @XView");
             }
 

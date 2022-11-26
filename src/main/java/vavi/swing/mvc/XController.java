@@ -46,8 +46,8 @@ public @interface XController {
          */
         public static Set<Field> getSwingControllerActionFields(Object bean) {
             //
-            XController propsEntity = bean.getClass().getAnnotation(XController.class);
-            if (propsEntity == null) {
+            XController annotation = bean.getClass().getAnnotation(XController.class);
+            if (annotation == null) {
                 throw new IllegalArgumentException("bean is not annotated with @XController");
             }
 
@@ -73,8 +73,8 @@ public @interface XController {
          */
         public static Set<Method> getSwingControllerActionMethods(Object bean) {
             //
-            XController propsEntity = bean.getClass().getAnnotation(XController.class);
-            if (propsEntity == null) {
+            XController annotation = bean.getClass().getAnnotation(XController.class);
+            if (annotation == null) {
                 throw new IllegalArgumentException("bean is not annotated with @XController");
             }
 
@@ -100,8 +100,8 @@ public @interface XController {
          */
         public static Set<Field> getSwingComponentFields(Object bean) {
             //
-            XView propsEntity = bean.getClass().getAnnotation(XView.class);
-            if (propsEntity == null) {
+            XView annotation = bean.getClass().getAnnotation(XView.class);
+            if (annotation == null) {
                 throw new IllegalArgumentException("bean is not annotated with @XView");
             }
 
