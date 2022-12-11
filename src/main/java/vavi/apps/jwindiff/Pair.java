@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.util.logging.Level;
 
 import vavi.util.Debug;
-import vavi.util.gnu.Diff;
-import vavi.util.gnu.DiffUtil;
+import  vavi.util.diff.Diff;
+import  vavi.util.diff.DiffUtil;
 
 
 /**
  * Pair.
- * 
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ *
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 040612 vavi refactoring <br>
  */
 class Pair {
@@ -30,7 +30,7 @@ class Pair {
     String leftFilePath;
 
     /**
-     * 
+     *
      */
     enum Type {
         /**  0 ..... */
@@ -46,7 +46,7 @@ class Pair {
         /** 16 +.... */
         INCOMPARABLE(false);
         /* */
-        boolean different;
+        final boolean different;
         /** */
         Type(boolean different) {
             this.different = different;
@@ -133,7 +133,7 @@ class Pair {
         if (left == null) {
             String rf = right.getPath();
             String rt = rightFilePath;
-            String lf = rf.substring(rt.length(), rf.length());
+            String lf = rf.substring(rt.length());
             String lt = leftFilePath;
             File file = new File(lt, lf);
             if (file.exists()) {
@@ -144,7 +144,7 @@ Debug.println("new left: " + left);
             String lt = leftFilePath;
             String lf = left.getPath();
             String rt = rightFilePath;
-            String rf = lf.substring(lt.length(), lf.length());
+            String rf = lf.substring(lt.length());
             File file = new File(rt, rf);
             if (file.exists()) {
                 right = file;
@@ -203,8 +203,7 @@ Debug.printStackTrace(e);
         if (ignoreWhiteSpace) {
             a = DiffUtil.readLinesIgnoreWhiteSpace(left);
             b = DiffUtil.readLinesIgnoreWhiteSpace(right);
-        }
-        else {
+        } else {
             a = DiffUtil.readLines(left);
             b = DiffUtil.readLines(right);
         }
@@ -214,7 +213,7 @@ Debug.printStackTrace(e);
     }
 
     /**
-     * 
+     *
      */
     public void quickDiff() {
 
@@ -240,7 +239,7 @@ Debug.println(Level.SEVERE, e);
     }
 
     /**
-     * 
+     *
      */
     public void slowDiff(boolean isIgnoreBlanks) {
         try {

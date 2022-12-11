@@ -12,14 +12,14 @@ import java.util.List;
 
 import vavi.apps.jwindiff.Model.ShowExpandMode;
 import vavi.apps.jwindiff.Model.ShowNumMode;
-import vavi.util.gnu.Diff;
-import vavi.util.gnu.DiffUtil;
+import vavi.util.diff.Diff;
+import vavi.util.diff.DiffUtil;
 
 
 /**
  * Printer.
- * 
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ *
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 040612 vavi refactoring <br>
  */
 class Printer extends DiffUtil.BasicPrinter {

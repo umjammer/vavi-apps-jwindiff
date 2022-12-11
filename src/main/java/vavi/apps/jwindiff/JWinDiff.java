@@ -6,7 +6,8 @@
 
 package vavi.apps.jwindiff;
 
-import vavi.util.Debug;
+import vavi.swing.mvc.XController;
+import vavi.swing.mvc.XView;
 
 
 /**
@@ -15,7 +16,7 @@ import vavi.util.Debug;
  * TODO JList を JTable に
  * </p>
  * @author David Drysdale
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 020425 vavi port from <a href="http://www.lurklurk.org/xwindiff.html">xwindiff</a> <br>
  *          0.10 020428 vavi rewrite almost <br>
  *          0.11 021117 vavi performance up <br>
@@ -35,9 +36,6 @@ public class JWinDiff {
     Model model;
 
     /** */
-    Form form;
-
-    /** */
     Controller controller;
 
     /**
@@ -46,16 +44,11 @@ public class JWinDiff {
     private JWinDiff(String[] args) throws Exception {
 
         model = new Model();
-        form = new Form();
         view = new View();
-        controller = new Controller(model, form);
+        controller = new Controller(model);
 
-        // TODO wanna be hide
-        SwingController sc = new SwingController(controller, view);
-        sc.bind();
-
-        model.addViewListener(view.mainViewListener);
-        form.addViewListener(view.mainViewListener);
+        XController.Util.bind(controller, view);
+        model.addViewListener(ev -> XView.Util.bind(view, ev));
 
         // Create the main window and all of the dialog widgets
         controller.initMain(args);
@@ -65,14 +58,8 @@ public class JWinDiff {
     /**
      * The program entry point.
      */
-    public static void main(String[] args) {
-        try {
-            new JWinDiff(args);
-        } catch (Exception e) {
-Debug.printStackTrace(e);
-            System.err.println(e.getMessage());
-            System.exit(1);
-        }
+    public static void main(String[] args) throws Exception {
+        new JWinDiff(args);
     }
 }
 

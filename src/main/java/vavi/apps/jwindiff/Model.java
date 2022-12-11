@@ -16,8 +16,6 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -38,12 +36,12 @@ import vavi.util.event.GenericSupport;
 /**
  * Model.
  *
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 040827 nsano initial version <br>
  */
 class Model {
 
-    /** view listener */
+    /** view listener TODO remove, use proxy? */
     private GenericSupport gs = new GenericSupport();
 
     /** */
@@ -62,7 +60,7 @@ class Model {
     enum DisplayMode {
         NONE_MODE,
         OUTLINE_MODE,
-        EXPANDED_MODE;
+        EXPANDED_MODE
     }
 
     /** Current display mode */
@@ -229,6 +227,7 @@ class Model {
      * option
      */
     public void setShowDifferent(boolean showDifferent) {
+new Exception("*** DUMMY ***").printStackTrace();
         this.showDifferent = showDifferent;
     }
 
@@ -280,8 +279,7 @@ class Model {
      * Toggle the marked state of all files.
      */
     void toggleAllMarks() {
-        for (int i = 0; i < pairs.size(); i++) {
-            Pair pair = pairs.get(i);
+        for (Pair pair : pairs) {
             pair.setMarked(!pair.getMarked());
         }
     }
@@ -301,11 +299,7 @@ class Model {
         File left = leftFiles.get(0);
         File right = rightFiles.get(0);
 
-        if (!right.isDirectory() && !left.isDirectory()) {
-            multiMode = false;
-        } else {
-            multiMode = true;
-        }
+        multiMode = right.isDirectory() || left.isDirectory();
 
         displayMode = multiMode ? DisplayMode.OUTLINE_MODE : DisplayMode.EXPANDED_MODE;
 
@@ -324,8 +318,7 @@ class Model {
 
     /** */
     void rescan(Pair[] pairs) {
-        for (int i = 0; i < pairs.length; i++) {
-            Pair pair = pairs[i];
+        for (Pair pair : pairs) {
             pair.rescan();
 Debug.println(pair.getCommonName());
         }
@@ -333,7 +326,7 @@ Debug.println(pair.getCommonName());
 
     /**
      * Build up a comprehensive list of files.
-     * 
+     *
      * @param ldir the directory to be added to the file list.
      * @param rdir same as the left.
      */
@@ -349,15 +342,14 @@ Debug.println(pair.getCommonName());
 
     /**
      * Build up a comprehensive list of files.
-     * 
+     *
      * @param lfiles the file list.
      * @param rfiles same as the left.
      */
     void makePairs(List<File> lfiles, List<File> rfiles) {
         pairs.clear();
 
-        for (int i = 0; i < lfiles.size(); i++) {
-            File lfile = lfiles.get(i);
+        for (File lfile : lfiles) {
             File rfile = findIn(rfiles, lfile);
             if (rfile != null) {
                 pairs.add(new Pair(getLeftFilePath(), lfile, getRightFilePath(), rfile));
@@ -367,42 +359,39 @@ Debug.println(pair.getCommonName());
             }
         }
 
-        for (int i = 0; i < rfiles.size(); i++) {
-            File rfile = rfiles.get(i);
+        for (File rfile : rfiles) {
             pairs.add(new Pair(getLeftFilePath(), null, getRightFilePath(), rfile));
         }
 
-        Collections.sort(pairs, new Comparator<Pair>() {
-            public int compare(Pair o1, Pair o2) {
-                String first = o1.getCommonName();
-                String second = o2.getCommonName();
-                return first.compareToIgnoreCase(second);
-            }
+        pairs.sort((o1, o2) -> {
+            String first = o1.getCommonName();
+            String second = o2.getCommonName();
+            return first.compareToIgnoreCase(second);
         });
     }
 
     /**
      * Fills an array of File for the contents of a given directory.
-     * 
+     *
      * @param directory path to the required directory
      */
     private void fillFileList(File directory, List<File> entries) {
 
         File[] files = directory.listFiles();
 
-        for (int i = 0; i < files.length; i++) {
+        for (File file : files) {
 
-            if (files[i].isDirectory()) {
-                fillFileList(files[i], entries);
+            if (file.isDirectory()) {
+                fillFileList(file, entries);
             } else {
-                entries.add(files[i]);
+                entries.add(file);
             }
         }
     }
 
     /**
      * Look for the given name in the name field of a given array of Files.
-     * 
+     *
      * @return null if not found.
      */
     private File findIn(List<File> rfiles, File lfile) {
@@ -415,8 +404,7 @@ Debug.println(pair.getCommonName());
 // Debug.println("lf: " + lf);
             }
             String rt = getRightFilePath();
-            for (int i = 0; i < rfiles.size(); i++) {
-                File rfile = rfiles.get(i);
+            for (File rfile : rfiles) {
                 String rf = rfile.getPath();
                 if (rf.startsWith(rt)) {
                     rf = rf.substring(rt.length() + 1);
@@ -438,8 +426,7 @@ Debug.println(pair.getCommonName());
      */
     void toggleSelectedMark(Pair[] selected) {
         if (displayMode == Model.DisplayMode.OUTLINE_MODE) {
-            for (int i = 0; i < selected.length; i++) {
-                Pair pair = selected[i];
+            for (Pair pair : selected) {
                 pair.setMarked(!pair.getMarked());
             }
         }
@@ -451,8 +438,7 @@ Debug.println(pair.getCommonName());
     void markRegex(String regex) {
         try {
             Pattern p = Pattern.compile(regex);
-            for (int i = 0; i < pairs.size(); i++) {
-                Pair pair = pairs.get(i);
+            for (Pair pair : pairs) {
                 Matcher m = p.matcher(pair.getCommonName());
                 if (m.find()) {
                     pair.setMarked(true);
@@ -477,7 +463,7 @@ Debug.println(pair.getCommonName());
     /** */
     private static final ResourceBundle rb = ResourceBundle.getBundle("JWinDiffResources", Locale.getDefault());
 
-    /** */
+    /** TODO use prefs */
     void serializePairs(OutputStream os) throws IOException {
 
         BufferedWriter w = new BufferedWriter(new OutputStreamWriter(os));
@@ -492,8 +478,7 @@ Debug.println(pair.getCommonName());
             w.write(rb.getString("filelist.message.0"));
             w.newLine();
 
-            for (int i = 0; i < pairs.size(); i++) {
-                Pair pair = pairs.get(i);
+            for (Pair pair : pairs) {
                 if (pair.getMarked() && hideMarked) {
                     continue;
                 }
@@ -508,8 +493,7 @@ Debug.println(pair.getCommonName());
             w.write(rb.getString("filelist.message.1"));
             w.newLine();
 
-            for (int i = 0; i < pairs.size(); i++) {
-                Pair pair = pairs.get(i);
+            for (Pair pair : pairs) {
                 if (pair.getMarked() && hideMarked) {
                     continue;
                 }
@@ -525,8 +509,7 @@ Debug.println(pair.getCommonName());
             w.write(rb.getString("filelist.message.2"));
             w.newLine();
 
-            for (int i = 0; i < pairs.size(); i++) {
-                Pair pair = pairs.get(i);
+            for (Pair pair : pairs) {
                 if (pair.getMarked() && hideMarked) {
                     continue;
                 }
@@ -542,8 +525,7 @@ Debug.println(pair.getCommonName());
             w.write(rb.getString("filelist.message.3"));
             w.newLine();
 
-            for (int i = 0; i < pairs.size(); i++) {
-                Pair pair = pairs.get(i);
+            for (Pair pair : pairs) {
                 if (pair.getMarked() && hideMarked) {
                     continue;
                 }
@@ -567,7 +549,7 @@ Debug.println(pair.getCommonName());
         return pair.getCommonName() + "," + sdf.format(new Date(pair.left.lastModified())) + "," + pair.left.length() + "," + sdf.format(new Date(pair.right.lastModified())) + "," + pair.right.length();
     }
 
-    /** */
+    /** TODO use prefs */
     void serialize(OutputStream os) throws IOException {
 
         Properties props = new Properties();
@@ -651,17 +633,17 @@ Debug.println(pair.getCommonName());
         showNumMode = ShowNumMode.valueOf(value);
 
         value = props.getProperty(PROP_IGNOREBLANKS, "false");
-        ignoreBlanks = Boolean.valueOf(value);
+        ignoreBlanks = Boolean.parseBoolean(value);
         value = props.getProperty(PROP_SHOWIDENTICAL, "true");
-        showIdentical = Boolean.valueOf(value);
+        showIdentical = Boolean.parseBoolean(value);
         value = props.getProperty(PROP_SHOWLEFTONLY, "false");
-        showLeft = Boolean.valueOf(value);
+        showLeft = Boolean.parseBoolean(value);
         value = props.getProperty(PROP_SHOWRIGHTONLY, "false");
-        showRight = Boolean.valueOf(value);
+        showRight = Boolean.parseBoolean(value);
         value = props.getProperty(PROP_SHOWDIFFERENT, "true");
-        showDifferent = Boolean.valueOf(value);
+        showDifferent = Boolean.parseBoolean(value);
         value = props.getProperty(PROP_HIDEMARKED, "true");
-        hideMarked = Boolean.valueOf(value);
+        hideMarked = Boolean.parseBoolean(value);
 
         // history
 

@@ -6,13 +6,11 @@
 
 package vavi.apps.jwindiff;
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
@@ -24,7 +22,7 @@ import vavi.apps.jwindiff.Pair.Type;
 /**
  * SimpleListCellRenderer.
  *
- * @author <a href="mailto:vavivavi@yahoo.co.jp">Naohide Sano</a> (nsano)
+ * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 040612 vavi refactoring <br>
  */
 class SimpleListCellRenderer extends DefaultListCellRenderer {
@@ -65,14 +63,14 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     private void setPair(Pair pair, int index, int width, FontMetrics fontMetrics) {
 
         if (pair.getDiff().isDifferent()) {
-            setForeground(Color.red);
+            setForeground(View.darkRed);
         }
         if (pair.getMarked()) {
-            setBackground(Color.yellow);
+            setBackground(View.blue);
         }
         setOpaque(true);
 
-        String s = new String();
+        String s = "";
         if (!model.getShowNumMode().equals(ShowNumMode.none)) {
             s += toInt5(index + 1);
         }
@@ -118,13 +116,13 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
      */
     private void setLine(Line line, int index) {
         if (line.getFlag() == Line.Type.DELETED) {
-            setBackground(Color.red);
+            setBackground(View.red);
         } else if (line.getFlag() == Line.Type.INSERTED) {
-            setBackground(Color.yellow);
+            setBackground(View.green);
         }
         setOpaque(true);
 
-        String s = new String();
+        String s = "";
 //      String s = new String(toInt5(index) + " "); // TODO debug
         if (!model.getShowNumMode().equals(ShowNumMode.none) &&
             !(model.getShowExpandMode().equals(ShowExpandMode.left) && line.getFlag() == Line.Type.INSERTED) &&
@@ -135,13 +133,13 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         // TODO, TAB
         switch (model.getShowExpandMode()) {
         case left:
-            if (line.getFlag() == Line.Type.PLAIN) 
+            if (line.getFlag() == Line.Type.PLAIN)
             s += "  " + "   " + replaceTabToSpace(line.getLine());
             else if (line.getFlag() == Line.Type.DELETED)
             s += "<!" + "   " + replaceTabToSpace(line.getLine());
             break;
         case right:
-            if (line.getFlag() == Line.Type.PLAIN) 
+            if (line.getFlag() == Line.Type.PLAIN)
             s += "  " + "   " + replaceTabToSpace(line.getLine());
             else if (line.getFlag() == Line.Type.INSERTED)
             s += "!>" + "   " + replaceTabToSpace(line.getLine());
@@ -157,13 +155,13 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO */
-    private final String toInt5(int i) {
-        String s = "    " + String.valueOf(i);
+    private String toInt5(int i) {
+        String s = "    " + i;
         return s.substring(s.length() - 5);
     }
 
     /** TODO */
-    private final String toStringN(String v, int w, FontMetrics fontMetrics) {
+    private String toStringN(String v, int w, FontMetrics fontMetrics) {
         int width = fontMetrics.stringWidth(v);
         int n = 1;
         String s;
@@ -185,7 +183,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO */
-    private final String spaceN(int n) {
+    private String spaceN(int n) {
 //Debug.println(n);
         StringBuilder sb = new StringBuilder(n);
         for (int i = 0; i < n; i++) {
@@ -195,7 +193,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO 漢字等の文字幅に対応していない */
-    private final String replaceTabToSpace(String s) {
+    private String replaceTabToSpace(String s) {
         int p = 0;
         while (true) {
             p = s.indexOf('\t', p);
