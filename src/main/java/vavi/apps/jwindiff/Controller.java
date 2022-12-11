@@ -580,7 +580,7 @@ Debug.println(i + ":ignore: " + file);
     private void editFile(File file) {
         try {
             if (file != null && file.exists() && model.editor != null) {
-                Runtime.getRuntime().exec(model.editor + " \"" + file.getAbsolutePath() + "\"");
+                Runtime.getRuntime().exec(new String[] {model.editor, file.getAbsolutePath()});
             }
         } catch (Exception e) {
 Debug.printStackTrace(e);
