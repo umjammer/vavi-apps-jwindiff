@@ -187,14 +187,10 @@ logger.warning("wip: " + action);
 //logger.info(controller.getClass().getSimpleName() + "." + method.getName() + ", " + action); 
                 if (method.getName().equals(action)) { // TODO cache
                     if (method.getParameterCount() == 0) {
-                        ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
-                            BeanUtil.invoke(method, controller);
-                        });
+                        ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> BeanUtil.invoke(method, controller));
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + controller.getClass().getSimpleName() + "." + action + "()"); 
                     } else if (method.getParameterCount() == 1 && method.getParameterTypes()[0].equals(ActionEvent.class)) {
-                        ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {
-                            BeanUtil.invoke(method, controller, ev);
-                        });
+                        ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> BeanUtil.invoke(method, controller, ev));
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + controller.getClass().getSimpleName() + "." + action + "(ev)"); 
                     } else {
                         ((AbstractButton) BeanUtil.getFieldValue(component, view)).addActionListener(ev -> {

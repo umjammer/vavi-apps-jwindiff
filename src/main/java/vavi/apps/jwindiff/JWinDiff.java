@@ -8,7 +8,6 @@ package vavi.apps.jwindiff;
 
 import vavi.swing.mvc.XController;
 import vavi.swing.mvc.XView;
-import vavi.util.Debug;
 
 
 /**

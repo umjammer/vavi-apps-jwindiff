@@ -15,9 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.NoSuchElementException;
 import java.util.logging.Logger;
-
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -142,14 +140,10 @@ public @interface SwingComponent {
             if (!target.listSelectionListener().isEmpty()) {
                 Method method = getMethod(controller, target.listSelectionListener());
                 if (method.getParameterCount() == 0) {
-                    ((JList<?>) BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> {
-                        BeanUtil.invoke(method, controller);
-                    });
+                    ((JList<?>) BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> BeanUtil.invoke(method, controller));
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + target.listSelectionListener() + "()");
                 } else {
-                    ((JList<?>) BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> {
-                        BeanUtil.invoke(method, controller, ev);
-                    });
+                    ((JList<?>) BeanUtil.getFieldValue(component, view)).addListSelectionListener(ev -> BeanUtil.invoke(method, controller, ev));
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev -> " + view.getClass().getSimpleName() + "." + target.listSelectionListener() + "(ev)");
                 }
             }
@@ -167,9 +161,7 @@ logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev
             Object subComponent = getSub(view, component);
             if (!target.adjustmentListener().isEmpty()) {
                 Method method = getMethod(controller, target.adjustmentListener());
-                ((JScrollBar) subComponent).addAdjustmentListener(ev -> {
-                    BeanUtil.invoke(method, controller, ev);
-                });
+                ((JScrollBar) subComponent).addAdjustmentListener(ev -> BeanUtil.invoke(method, controller, ev));
 logger.info(view.getClass().getSimpleName() + "." + component.getName() + (subComponent.getClass().equals(component.getDeclaringClass()) ? "" : "." + subComponent.getClass().getSimpleName()) + " = ev -> " + view.getClass().getSimpleName() + "." + target.adjustmentListener() + "(ev)");
             }
         }

@@ -13,8 +13,6 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import vavi.util.properties.annotation.Property;
-
 
 /**
  * SwingControllerAction.
