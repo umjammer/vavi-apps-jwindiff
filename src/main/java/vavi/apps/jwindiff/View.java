@@ -143,19 +143,16 @@ class View {
         pictView.setVisible(true);
     }
 
-    /** */
     @XViewAction
     void setNames(String name) {
         names.setText(name + " ");
     }
 
-    /** */
     @XViewAction
     void setPaths(String path) {
         paths.setText(" " + path);
     }
 
-    /** */
     @XViewAction
     void displayException(Exception e) {
         DefaultListModel<Object> model = new DefaultListModel<>();
@@ -163,7 +160,6 @@ class View {
         mainView.setModel(model);
     }
 
-    /** */
     @XViewAction
     void displaySingleFile(String[] lines) {
         DefaultListModel<Object> model = new DefaultListModel<>();
@@ -173,38 +169,32 @@ class View {
         mainView.setModel(model);
     }
 
-    /** */
     @XViewAction
     void updateGraphics() {
         pictView.repaint();
     }
 
-    /** */
     @XViewAction
     void toExpand() {
         viewExpand.setSelected(true);
     }
 
-    /** */
     @XViewAction
     void toOutline() {
         viewOutline.setSelected(true);
     }
 
-    /** */
     @XViewAction
     void toSelection() {
         mainView.ensureIndexIsVisible(0);
     }
 
-    /** */
     @XViewAction
     void startSelection(Point point) {
         first = mainView.locationToIndex(point);
 // Debug.println(first);
     }
 
-    /** */
     @XViewAction
     void continueSelection(Point point) {
         last = mainView.locationToIndex(point);
@@ -212,7 +202,6 @@ class View {
 // Debug.println(first + ", " + last);
     }
 
-    /** */
     @XViewAction
     void endSelection(Point point) {
         last = mainView.locationToIndex(point);
@@ -222,7 +211,6 @@ class View {
         }
     }
 
-    /** */
     @XViewAction
     void setTitle(String title) {
         top.setTitle(title);
@@ -239,7 +227,6 @@ Debug.println(mainView.getSelectedIndex());
         }
     }
 
-    /** */
     @XViewAction
     void moveCursor(int x, int y) {
         int height = pictView.getSize().height;
@@ -253,7 +240,7 @@ Debug.println(mainView.getSelectedIndex());
         pictView.repaint();
     }
 
-    //------------------------------------------------------------------------
+    // ----
 
     /**
      * Variables for the various dialogs
@@ -263,10 +250,8 @@ Debug.println(mainView.getSelectedIndex());
     JFileChooserField leftTargetChooser;
     /** */
     JFileChooserField rightTargetChooser;
-    /** */
     @SwingComponent(action = "okTargetsDialogAction")
     JButton okTargetsDialogButton;
-    /** */
     @SwingComponent(view = "pageCompareTargetsDialog_close")
     JButton cancelTargetsDialogButton;
 
@@ -332,7 +317,6 @@ Debug.println(mainView.getSelectedIndex());
         targetsDialog.pack();
     }
 
-    /** */
     @XViewAction
     void initCompareTargetsDialog(File left, File right) {
         leftTargetChooser.setCurrentDirectory(left);
@@ -341,20 +325,18 @@ Debug.println(mainView.getSelectedIndex());
         rightTargetChooser.setSelectedFile(right);
     }
 
-    /** */
     @XViewAction
     void pageCompareTargetsDialog() {
         targetsDialog.setLocationRelativeTo(top);
         targetsDialog.setVisible(true);
     }
 
-    /** */
     @XViewAction
     void pageCompareTargetsDialog_close() {
         targetsDialog.setVisible(false);
     }
 
-    // -------------------------------------------------------------------------
+    // ----
 
     /** */
     private JDialog saveListDialog;
@@ -377,11 +359,9 @@ Debug.println(mainView.getSelectedIndex());
     /** */
     JCheckBox hasNotMarked;
 
-    /** */
     @SwingComponent(action = "okSaveListDialogAction")
     JButton okSaveListDialogButton;
 
-    /** */
     @SwingComponent(view = "pageSaveListDialog_close")
     JButton cancelSaveListDialogButton;
 
@@ -457,7 +437,6 @@ Debug.println(mainView.getSelectedIndex());
         saveListDialog.setVisible(true);
     }
 
-    /** */
     @XViewAction
     void pageSaveListDialog_close() {
         saveListDialog.setVisible(false);
@@ -471,11 +450,9 @@ Debug.println(mainView.getSelectedIndex());
     /** The editor path name */
     JFileChooserField editorChooser;
 
-    /** */
     @SwingComponent(action = "okEditorDialogAction")
     JButton okEditorDialogButton;
 
-    /** */
     @SwingComponent(view = "pageEditorDialog_close")
     JButton cancelEditorDialogButton;
 
@@ -513,14 +490,12 @@ Debug.println(mainView.getSelectedIndex());
         editorDialog.pack();
     }
 
-    /** */
     @XViewAction
     void initEditorDialog(File file) {
         editorChooser.setCurrentDirectory(file);
         editorChooser.setSelectedFile(file);
     }
 
-    /** */
     @XViewAction
     void pageEditorChooser() {
         editorChooser.requestFocus();
@@ -541,11 +516,9 @@ Debug.println(mainView.getSelectedIndex());
     /** The text for matching */
     JHistoryComboBox patternField;
 
-    /** */
     @SwingComponent(action = "okPatternDialogAction")
     JButton okPatternDialogButton;
 
-    /** */
     @SwingComponent(view = "pagePatternDialog_close")
     JButton cancelPatternDialogButton;
 
@@ -582,7 +555,6 @@ Debug.println(mainView.getSelectedIndex());
         patternDialog.pack();
     }
 
-    /** */
     @XViewAction
     void pagePatternDialog() {
         patternField.requestFocus();
@@ -590,20 +562,19 @@ Debug.println(mainView.getSelectedIndex());
         patternDialog.setVisible(true);
     }
 
-    /** */
     @XViewAction
     void pagePatternDialog_close() {
         patternDialog.setVisible(false);
     }
 
-    // -------------------------------------------------------------------------
+    // ----
 
-    public static final Color green = new Color(0xD6, 0xFF, 0xEA);
-    public static final Color red = new Color(0xFF, 0xE5, 0xDD);
+    public static final Color green = new Color(0xd6, 0xff, 0xea);
+    public static final Color red = new Color(0xff, 0xe5, 0xdd);
     public static final Color darkGreen = new Color(0x00, 0x57, 0x33);
-    public static final Color darkRed = new Color(0xC3, 0x00, 0x00);
-    public static final Color darkGray = new Color(0xCA, 0xCA, 0xCA);
-    public static final Color blue = new Color(0x00, 0x2A, 0xDA);
+    public static final Color darkRed = new Color(0xc3, 0x00, 0x00);
+    public static final Color darkGray = new Color(0xca, 0xca, 0xca);
+    public static final Color blue = new Color(0x00, 0x2a, 0xda);
 
     /** */
     int first;
@@ -693,10 +664,8 @@ Debug.println(mainView.getSelectedIndex());
 
     // -------------------------------------------------------------------------
 
-    /** */
     @SwingComponent(action = "toExpand")
     JCheckBoxMenuItem viewExpand;
-    /** */
     @SwingComponent(action = "toOutline")
     JCheckBoxMenuItem viewOutline;
     /** In expanded mode, which files to show -- mutually exclusive */
@@ -717,22 +686,17 @@ Debug.println(mainView.getSelectedIndex());
     /** In expanded mode, which file numbering to show -- mutually exclusive */
     @SwingComponent(action = "setShowNumModeAction")
     JCheckBoxMenuItem hideNums;
-    /** */
     @SwingComponent(action = "updateOutline")
     JCheckBoxMenuItem ignoreBlanks;
     /** in outline mode, which files to list */
     @SwingComponent(action = "showIdenticalAction")
     JCheckBoxMenuItem showIdentical;
-    /** */
     @SwingComponent(action = "showDifferentAction")
     JCheckBoxMenuItem showDifferent;
-    /** */
     @SwingComponent(action = "showLeftAction")
     JCheckBoxMenuItem showLeft;
-    /** */
     @SwingComponent(action = "showRightAction")
     JCheckBoxMenuItem showRight;
-    /** */
     @SwingComponent(action = "hideMarkedAction")
     JCheckBoxMenuItem hideMarked;
     /** The popup menu */
@@ -742,100 +706,72 @@ Debug.println(mainView.getSelectedIndex());
     /** Widgets */
     @SwingComponent(windowClosing = "windowClosing")
     JFrame top;
-    /** */
     @SwingComponent(sub = "verticalScrollBar", adjustmentListener = "pal_adjustmentValueChanged")
     JScrollPane sp;
-    /** */
     @SwingComponent(mousePressed = "pml_mousePressed")
     JPanel pictView;
     /** */
     private JLabel names;
     /** */
     private JLabel paths;
-    /** */
     @SwingComponent(action = "changeMode")
     JButton changeMode;
-    /** */
     @SwingComponent(action = "pageCompareTargetsDialog")
     JMenuItem compareTargetsMenuItem;
-    /** */
     @SwingComponent(action = "abortAction")
     JMenuItem abortMenuItem;
-    /** */
     @SwingComponent(action = "pageSaveFile")
     JMenuItem saveFilelistMenuItem;
-    /** */
     @SwingComponent(action = "pageMain_close")
     JMenuItem exitMenuItem;
-    /** */
     @SwingComponent(action = "editLeft")
     JMenuItem editLeftMenuItem;
-    /** */
     @SwingComponent(action = "editRight")
     JMenuItem editRightMenuItem;
-    /** */
     @SwingComponent(action = "pageEditorChooser")
     JMenuItem setEditorMenuItem;
-    /** */
     @SwingComponent(action = "prevAction")
     JMenuItem prevMenuItem;
-    /** */
     @SwingComponent(action = "nextAction")
     JMenuItem nextMenuItem;
-    /** */
     @SwingComponent(action = "rescanAction")
     JMenuItem rescanMenuItem;
-    /** */
     @SwingComponent(action = "markFileAction")
     JMenuItem markFileMenuItem;
-    /** */
     @SwingComponent(view = "pagePatternDialog")
     JMenuItem markPatternMenuItem;
-    /** */
     @SwingComponent(action = "toggleAllMarks")
     JMenuItem toggleMarkedMenuItem;
     /** */
     JButton modeButton;
-    /** */
     @SwingComponent(action = "toExpand")
     JMenuItem expandMenuItem;
-    /** */
     @SwingComponent(action = "toOutline")
     JMenuItem outlineMenuItem;
 
     /** a menuItem instance cannot be reused */
     @SwingComponent(action = "prevAction")
     JMenuItem prevMenuItem2;
-    /** */
     @SwingComponent(action = "nextAction")
     JMenuItem nextMenuItem2;
-    /** */
     @SwingComponent(action = "rescanAction")
     JMenuItem rescanMenuItem2;
-    /** */
     @SwingComponent(action = "editLeft")
     JMenuItem editLeftMenuItem2;
-    /** */
     @SwingComponent(action = "editRight")
     JMenuItem editRightMenuItem2;
 
-    /** */
     @SwingComponent(action = "prevAction")
     JMenuItem prevMenuItem3;
-    /** */
     @SwingComponent(action = "nextAction")
     JMenuItem nextMenuItem3;
-    /** */
     @SwingComponent(action = "rescanAction")
     JMenuItem rescanMenuItem3;
-    /** */
     @SwingComponent(action = "editLeft")
     JMenuItem editLeftMenuItem3;
-    /** */
     @SwingComponent(action = "editRight")
     JMenuItem editRightMenuItem3;
 
-    /** */
     @SwingComponent(action = "copyFilesAction")
     JMenuItem copyFilesMenuItem;
 
@@ -1320,13 +1256,11 @@ Debug.println("isHideMarked: " + model.isHideMarked());
         }
     }
 
-    /** */
     @XViewAction
     void pageMain() {
         top.setVisible(true);
     }
 
-    /** */
     @XViewAction
     void pageMain_close() {
         top.dispose();
@@ -1334,19 +1268,17 @@ Debug.println("isHideMarked: " + model.isHideMarked());
 
     // ----
 
-    /** */
     @XViewAction
     void pagePopupOutline(int x, int y) {
         popupOutline.show(mainView, x, y);
     }
 
-    /** */
     @XViewAction
     void pagePopupExpanded(int x, int y) {
         popupExpanded.show(mainView, x, y);
     }
 
-    // -------------------------------------------------------------------------
+    // ----
 
     /**
      * Find next or prev diffs.
@@ -1441,5 +1373,3 @@ Debug.println("isHideMarked: " + model.isHideMarked());
         mainView.repaint(); // TODO for popup menu garbage
     }
 }
-
-/* */

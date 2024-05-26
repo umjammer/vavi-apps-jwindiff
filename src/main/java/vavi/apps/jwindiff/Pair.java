@@ -283,7 +283,7 @@ Debug.println(Level.SEVERE, e);
         return true;
     }
 
-    /** for debug */
+    @Override
     public String toString() {
         return "left: " + left +
                 ", lbase: " + leftFilePath +
@@ -295,5 +295,3 @@ Debug.println(Level.SEVERE, e);
                 ", commond: " + getCommonName();
     }
 }
-
-/* */

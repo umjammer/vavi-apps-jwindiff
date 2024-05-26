@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
-
 import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
@@ -40,7 +39,7 @@ import vavi.util.diff.DiffUtil;
 
 /**
  * Controller.
- * アプリケーションそのもの。View を除いたもの。
+ * The application itself. Excludes View.
  *
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
  * @version 0.00 060726 nsano initial version <br>
@@ -56,7 +55,7 @@ class Controller {
         Descent
     }
 
-    /** モデル */
+    /** */
     Model model;
 
     /** */
@@ -241,7 +240,7 @@ Debug.print(model.current);
         try {
             model.deserialize(new FileInputStream(configFile));
         } catch (FileNotFoundException e) {
-System.err.println(e);
+Debug.println(e);
             saveOptions();
         } catch (IOException e) {
 Debug.println(Level.SEVERE, e);
@@ -461,7 +460,7 @@ Debug.println("file: " + file);
                         model.getLeftFiles().add(file);
 Debug.println(i + ": add left: " + file);
                     } else if (i == 1) {
-                        if (model.getLeftFiles().size() > 0) {
+                        if (!model.getLeftFiles().isEmpty()) {
                             File left = model.getLeftFiles().get(0);
                             if (left.isDirectory() && file.isDirectory()) {
                                 file = new File(file.getCanonicalPath());
@@ -487,7 +486,7 @@ Debug.println(i + ":ignore: " + file);
             }
         }
 
-        if (args.length != 0 && (model.getLeftFiles().size() == 0 || model.getRightFiles().size() == 0)) {
+        if (args.length != 0 && (model.getLeftFiles().isEmpty() || model.getRightFiles().isEmpty())) {
             throw new IllegalArgumentException(rb.getString("message.usage"));
         }
     }
@@ -538,7 +537,7 @@ Debug.println(i + ":ignore: " + file);
     /** form */
     @SwingControllerAction
     void pageEditorChooser() {
-        if (model.editor != null && model.editor.length() != 0) {
+        if (model.editor != null && !model.editor.isEmpty()) {
             File file = new File(model.editor);
             model.viewUpdated(this, "initEditorDialog", file);
         }
@@ -549,7 +548,7 @@ Debug.println(i + ":ignore: " + file);
     @SwingControllerAction
     void pageCompareTargetsDialog() {
         if (model.displayMode == DisplayMode.NONE_MODE) {
-            if (model.getLeftFiles().size() > 0 && model.getRightFiles().size() > 0) {
+            if (!model.getLeftFiles().isEmpty() && !model.getRightFiles().isEmpty()) {
                 File left = model.getLeftFiles().get(0);
                 File right = model.getRightFiles().get(0);
                 model.viewUpdated(this, "initCompareTargetsDialog", left, right);
@@ -605,7 +604,7 @@ Debug.print(pair);
                     pair.setLeft(file.toFile());
                     pair.rescan();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Debug.printStackTrace(e);
                 }
             } else if (pair.getRight() == null || !pair.getRight().exists()) {
                 try {
@@ -618,7 +617,7 @@ Debug.print(pair);
                     pair.setRight(file.toFile());
                     pair.rescan();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Debug.printStackTrace(e);
                 }
             } else {
 Debug.println("both files do not exist: " + pair.getCommonName());
@@ -649,10 +648,11 @@ Debug.println("both files do not exist: " + pair.getCommonName());
      */
     @SwingControllerAction(view = "mainView.selectedValuesList")
     void copyFilesAction(List<Object> selection) {
-        if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
+        if (selection.isEmpty() || !(selection.get(0) instanceof Pair)) {
             return;
         }
-        Pair[] pairs = selection.toArray(new Pair[0]);
+        @SuppressWarnings("SuspiciousToArrayCall")
+        Pair[] pairs = selection.toArray(Pair[]::new);
         copyFiles(pairs);
     }
 
@@ -677,10 +677,11 @@ Debug.println("both files do not exist: " + pair.getCommonName());
      */
     @SwingControllerAction(view = "mainView.selectedValuesList")
     void rescanAction(List<Object> selection) {
-        if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
+        if (selection.isEmpty() || !(selection.get(0) instanceof Pair)) {
             return;
         }
-        Pair[] pairs = selection.toArray(new Pair[0]);
+        @SuppressWarnings("SuspiciousToArrayCall")
+        Pair[] pairs = selection.toArray(Pair[]::new);
         rescan(pairs);
     }
 
@@ -737,10 +738,11 @@ Debug.println("both files do not exist: " + pair.getCommonName());
      */
     @SwingControllerAction(view = "mainView.selectedValuesList")
     void markFileAction(List<Object> selection) {
-        if (selection.size() == 0 || !(selection.get(0) instanceof Pair)) {
+        if (selection.isEmpty() || !(selection.get(0) instanceof Pair)) {
             return;
         }
-        Pair[] pairs = selection.toArray(new Pair[0]);
+        @SuppressWarnings("SuspiciousToArrayCall")
+        Pair[] pairs = selection.toArray(Pair[]::new);
         toggleSelectedMark(pairs);
     }
 
@@ -844,20 +846,17 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         }
     }
 
-    /** */
     @SwingControllerAction
     void lsl_valueChanged(ListSelectionEvent ev) {
         if (!ev.getValueIsAdjusting()) {
-            if (!(((JList<?>) ev.getSource()).getSelectedValue() instanceof Pair)) {
+            if (!(((JList<?>) ev.getSource()).getSelectedValue() instanceof Pair current)) {
                 return;
             }
-            Pair current = (Pair) ((JList<?>) ev.getSource()).getSelectedValue();
 
             setCurrent(current);
         }
     }
 
-    /** */
     @SwingControllerAction
     void lml_mouseClicked(MouseEvent ev) {
         if (ev.getClickCount() == 2) {
@@ -871,7 +870,6 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         }
     }
 
-    /** */
     @SwingControllerAction
     void lml_mousePressed(MouseEvent ev) {
         if (SwingUtilities.isLeftMouseButton(ev)) {
@@ -879,7 +877,6 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         }
     }
 
-    /** */
     @SwingControllerAction
     void lml_mouseDragged(MouseEvent ev) {
         if (SwingUtilities.isLeftMouseButton(ev)) {
@@ -887,7 +884,6 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         }
     }
 
-    /** */
     @SwingControllerAction
     void lml_mouseReleased(MouseEvent ev) {
         if (SwingUtilities.isLeftMouseButton(ev)) {
@@ -895,7 +891,6 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         }
     }
 
-    /** */
     @SwingControllerAction
     void pml_mousePressed(MouseEvent ev) {
         int x = ev.getX();
@@ -904,17 +899,13 @@ Debug.println("both files do not exist: " + pair.getCommonName());
         moveCursor(x, y);
     }
 
-    /** */
     @SwingControllerAction
     void pal_adjustmentValueChanged(AdjustmentEvent ev) {
         updateGraphics();
     }
 
-    /** */
     @SwingControllerAction
     void windowClosing(WindowEvent ev) {
         pageMain_close2();
     }
 }
-
-/* */

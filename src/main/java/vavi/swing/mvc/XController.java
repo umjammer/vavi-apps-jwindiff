@@ -214,5 +214,3 @@ logger.info(view.getClass().getSimpleName() + "." + component.getName() + " = ev
         }
     }
 }
-
-/* */

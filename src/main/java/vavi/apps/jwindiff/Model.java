@@ -12,11 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +40,7 @@ import vavi.util.event.GenericSupport;
 class Model {
 
     /** view listener TODO remove, use proxy? */
-    private GenericSupport gs = new GenericSupport();
+    private final GenericSupport gs = new GenericSupport();
 
     /** */
     public void addViewListener(GenericListener listener) {
@@ -73,10 +71,10 @@ class Model {
     Pair current;
 
     /** */
-    private List<File> leftFiles  = new ArrayList<>();
+    private final List<Path> leftFiles  = new ArrayList<>();
 
     /** */
-    private List<File> rightFiles = new ArrayList<>();
+    private final List<Path> rightFiles = new ArrayList<>();
 
     /** dirs (true) or files (false) */
     boolean multiMode;
@@ -227,7 +225,7 @@ class Model {
      * option
      */
     public void setShowDifferent(boolean showDifferent) {
-new Exception("*** DUMMY ***").printStackTrace();
+new Exception("*** DUMMY ***").printStackTrace(System.err);
         this.showDifferent = showDifferent;
     }
 
@@ -289,7 +287,7 @@ new Exception("*** DUMMY ***").printStackTrace();
      * change.
      */
     void updateTargets() {
-        if (leftFiles.size() == 0 || rightFiles.size() == 0) {
+        if (leftFiles.isEmpty() || rightFiles.isEmpty()) {
             displayMode = DisplayMode.NONE_MODE;
             return;
         }
@@ -371,7 +369,7 @@ Debug.println(pair.getCommonName());
     }
 
     /**
-     * Fills an array of File for the contents of a given directory.
+     * Fills an array with File for the contents of a given directory.
      *
      * @param directory path to the required directory
      */
@@ -544,9 +542,13 @@ Debug.println(pair.getCommonName());
     }
 
     /** */
-    private String getDescriptionForListing(Pair pair) {
-        DateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        return pair.getCommonName() + "," + sdf.format(new Date(pair.left.lastModified())) + "," + pair.left.length() + "," + sdf.format(new Date(pair.right.lastModified())) + "," + pair.right.length();
+    private static String getDescriptionForListing(Pair pair) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        return pair.getCommonName() + "," +
+                formatter.format(Files.getLastModifiedTime(pair.left).toInstant()) + "," +
+                Files.size(pair.left) + "," +
+                formatter.format(Files.getLastModifiedTime(pair.right).toInstant()) + "," +
+                Files.size(pair.right);
     }
 
     /** TODO use prefs */
@@ -651,7 +653,7 @@ Debug.println(pair.getCommonName());
         while (i < 100) {
             String name = "history.pattern." + i++;
             value = props.getProperty(name);
-            if (value != null && !"".equals(value)) {
+            if (value != null && !value.isEmpty()) {
                 markPatterns.add(value);
             } else {
                 break;
@@ -662,7 +664,7 @@ Debug.println(pair.getCommonName());
         while (i < 100) {
             String name = "dir1.pattern." + i++;
             value = props.getProperty(name);
-            if (value != null && !"".equals(value)) {
+            if (value != null && !value.isEmpty()) {
                 dir1Patterns.add(value);
             } else {
                 break;
@@ -673,7 +675,7 @@ Debug.println(pair.getCommonName());
         while (i < 100) {
             String name = "dir2.pattern." + i++;
             value = props.getProperty(name);
-            if (value != null && !"".equals(value)) {
+            if (value != null && !value.isEmpty()) {
                 dir2Patterns.add(value);
             } else {
                 break;
@@ -681,5 +683,3 @@ Debug.println(pair.getCommonName());
         }
     }
 }
-
-/* */

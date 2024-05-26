@@ -25,7 +25,7 @@ import vavi.util.diff.DiffUtil;
 class Printer extends DiffUtil.BasicPrinter {
 
     /** */
-    private Model model;
+    private final Model model;
 
     /** */
     public Printer(Model model) throws IOException {
@@ -164,5 +164,3 @@ class Printer extends DiffUtil.BasicPrinter {
         return listModel;
     }
 }
-
-/* */
