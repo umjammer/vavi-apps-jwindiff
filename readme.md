@@ -1,11 +1,30 @@
 [![Release](https://jitpack.io/v/umjammer/vavi-apps-jwindiff.svg)](https://jitpack.io/#umjammer/vavi-apps-jwindiff)
 [![Java CI](https://github.com/umjammer/vavi-apps-jwindiff/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/vavi-apps-jwindiff/actions/workflows/maven.yml)
 [![CodeQL](https://github.com/umjammer/vavi-apps-jwindiff/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/umjammer/vavi-apps-jwindiff/actions/workflows/codeql-analysis.yml)
-![Java](https://img.shields.io/badge/Java-8-b07219)
+![Java](https://img.shields.io/badge/Java-17-b07219)
 
 # JWinDiff
 
+<img alt="duke_diff" src="https://github.com/umjammer/vavi-apps-jwindiff/assets/493908/25dcec73-f5ea-4735-8ae5-aa4bc1646e77" width="160" />
+
 🐣 Incubation for swing bindings.
+
+## Install
+
+ * [maven](https://jitpack.io/#umjammer/vavi-apps-jwindiff)
+
+## Usage
+
+```shell
+ $ mvn -P run antrun:run -Ddir1='dir1' -Ddir2='dir2'
+```
+
+## References
+
+### Tech Know
+
+ * JPopupMenu didn't work because of [this](http://developer.java.sun.com/developer/bugParade/bugs/4632782.html)
+ * File#getCanonicalPath is huge cost
 
 ## TODO
 
@@ -26,8 +45,5 @@
  * list to table
  * ~~DnD to JFileChooserHistoryComboBox [Refference](https://web.archive.org/web/20010127050300/http://www5.big.or.jp/~tera/Labo/Java2/j2dnd.html)~~
  * MVC separation perfectly
-
-## Tech Know
-
- * JPopupMenu didn't work because of [this](http://developer.java.sun.com/developer/bugParade/bugs/4632782.html)
- * File#getCanonicalPath is huge cost
+ * when the location bar is clicked,  jump to the location
+ * cannot delete mark pattern
