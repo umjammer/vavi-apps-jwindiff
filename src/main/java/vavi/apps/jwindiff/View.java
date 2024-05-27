@@ -16,6 +16,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -105,7 +106,7 @@ class View {
 
     /** TODO */
     @XViewAction
-    void redisplayOutlineBefore(String left, String right) {
+    void redisplayOutlineBefore(Path left, Path right) {
         changeMode.setText(rb.getString("button.changeMode.text.expand"));
         viewOutline.setSelected(true);
         viewExpand.setSelected(false);

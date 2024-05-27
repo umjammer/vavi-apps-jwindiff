@@ -8,6 +8,8 @@ package vavi.apps.jwindiff;
 
 import java.awt.Component;
 import java.awt.FontMetrics;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -17,6 +19,7 @@ import javax.swing.JList;
 import vavi.apps.jwindiff.Model.ShowExpandMode;
 import vavi.apps.jwindiff.Model.ShowNumMode;
 import vavi.apps.jwindiff.Pair.Type;
+import vavi.util.Debug;
 
 
 /**
@@ -90,25 +93,28 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
      * Assumption: at least of the two files is indeed a REGULARFILE
      */
     private static String getDescription(Pair pair) {
-        if (pair.left == null) {
-            return MessageFormat.format(rb.getString("pair.description.only"), pair.rightFilePath);
-        } else if (pair.right == null) {
-            return MessageFormat.format(rb.getString("pair.description.only"), pair.leftFilePath);
-        } else if (pair.diff == Type.IDENTICAL) {
-            return rb.getString("pair.description.identical");
-        } else if (pair.diff == Type.DIFFERENT_BLANKS) {
-            return rb.getString("pair.description.differentBlanks");
-        } else if (pair.diff == Type.DIFFERENT || pair.diff == Type.DIFFERENT_NOTSURE) {
-            if (pair.left.lastModified() < pair.right.lastModified()) {
-                return MessageFormat.format(rb.getString("pair.description.different"), pair.rightFilePath);
-            } else if (pair.left.lastModified() > pair.right.lastModified()) {
-                return MessageFormat.format(rb.getString("pair.description.different"), pair.leftFilePath);
-            } else {
-                return rb.getString("pair.description.differentSametime");
+        try {
+            if (pair.left == null) {
+                return MessageFormat.format(rb.getString("pair.description.only"), pair.rightDir);
+            } else if (pair.right == null) {
+                return MessageFormat.format(rb.getString("pair.description.only"), pair.leftDir);
+            } else if (pair.diff == Type.IDENTICAL) {
+                return rb.getString("pair.description.identical");
+            } else if (pair.diff == Type.DIFFERENT_BLANKS) {
+                return rb.getString("pair.description.differentBlanks");
+            } else if (pair.diff == Type.DIFFERENT || pair.diff == Type.DIFFERENT_NOTSURE) {
+                if (Files.getLastModifiedTime(pair.left).compareTo(Files.getLastModifiedTime(pair.right)) < 0) {
+                    return MessageFormat.format(rb.getString("pair.description.different"), pair.rightDir);
+                } else if (Files.getLastModifiedTime(pair.left).compareTo(Files.getLastModifiedTime(pair.right)) > 0) {
+                    return MessageFormat.format(rb.getString("pair.description.different"), pair.leftDir);
+                } else {
+                    return rb.getString("pair.description.differentSametime");
+                }
             }
-        } else {
-            return rb.getString("pair.description.error");
+        } catch (IOException e) {
+            Debug.printStackTrace(e);
         }
+        return rb.getString("pair.description.error");
     }
 
     /**

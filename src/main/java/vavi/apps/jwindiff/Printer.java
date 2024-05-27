@@ -29,7 +29,7 @@ class Printer extends DiffUtil.BasicPrinter {
 
     /** */
     public Printer(Model model) throws IOException {
-        super(DiffUtil.readLines(model.current.left), DiffUtil.readLines(model.current.right));
+        super(DiffUtil.readLines(model.current.left.toFile()), DiffUtil.readLines(model.current.right.toFile()));
         this.model = model;
     }
 

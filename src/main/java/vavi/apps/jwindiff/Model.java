@@ -7,11 +7,13 @@
 package vavi.apps.jwindiff;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -24,6 +26,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Stream;
 
 import vavi.util.Debug;
 import vavi.util.event.GenericEvent;
@@ -116,31 +119,31 @@ class Model {
     /**
      * Gets a canonical path of the first element of files.
      */
-    private static String getPath(List<File> files) {
-        return files.get(0).getPath();
+    private static Path getPath(List<Path> files) {
+        return files.get(0);
     }
 
     /** */
-    public String getRightFilePath() {
+    public Path getRightFilePath() {
         return getPath(rightFiles);
     }
 
     /** */
-    public String getLeftFilePath() {
+    public Path getLeftFilePath() {
         return getPath(leftFiles);
     }
 
     /**
      * @return files
      */
-    public List<File> getLeftFiles() {
+    public List<Path> getLeftFiles() {
         return leftFiles;
     }
 
     /**
      * @return files
      */
-    public List<File> getRightFiles() {
+    public List<Path> getRightFiles() {
         return rightFiles;
     }
 
@@ -286,7 +289,7 @@ new Exception("*** DUMMY ***").printStackTrace(System.err);
      * Perform the processing. Called at start of day and when the targets
      * change.
      */
-    void updateTargets() {
+    void updateTargets() throws IOException {
         if (leftFiles.isEmpty() || rightFiles.isEmpty()) {
             displayMode = DisplayMode.NONE_MODE;
             return;
@@ -294,10 +297,10 @@ new Exception("*** DUMMY ***").printStackTrace(System.err);
 
         // Figure out which mode we should start in
 
-        File left = leftFiles.get(0);
-        File right = rightFiles.get(0);
+        Path left = leftFiles.get(0);
+        Path right = rightFiles.get(0);
 
-        multiMode = right.isDirectory() || left.isDirectory();
+        multiMode = Files.isDirectory(right) || Files.isDirectory(left);
 
         displayMode = multiMode ? DisplayMode.OUTLINE_MODE : DisplayMode.EXPANDED_MODE;
 
@@ -328,10 +331,10 @@ Debug.println(pair.getCommonName());
      * @param ldir the directory to be added to the file list.
      * @param rdir same as the left.
      */
-    void makePairs(File ldir, File rdir) {
+    void makePairs(Path ldir, Path rdir) throws IOException {
 
-        List<File> lfiles = new ArrayList<>();
-        List<File> rfiles = new ArrayList<>();
+        List<Path> lfiles = new ArrayList<>();
+        List<Path> rfiles = new ArrayList<>();
         fillFileList(ldir, lfiles);
         fillFileList(rdir, rfiles);
 
@@ -344,11 +347,11 @@ Debug.println(pair.getCommonName());
      * @param lfiles the file list.
      * @param rfiles same as the left.
      */
-    void makePairs(List<File> lfiles, List<File> rfiles) {
+    void makePairs(List<Path> lfiles, List<Path> rfiles) {
         pairs.clear();
 
-        for (File lfile : lfiles) {
-            File rfile = findIn(rfiles, lfile);
+        for (Path lfile : lfiles) {
+            Path rfile = findIn(rfiles, lfile);
             if (rfile != null) {
                 pairs.add(new Pair(getLeftFilePath(), lfile, getRightFilePath(), rfile));
                 rfiles.remove(rfile);
@@ -357,7 +360,7 @@ Debug.println(pair.getCommonName());
             }
         }
 
-        for (File rfile : rfiles) {
+        for (Path rfile : rfiles) {
             pairs.add(new Pair(getLeftFilePath(), null, getRightFilePath(), rfile));
         }
 
@@ -373,17 +376,20 @@ Debug.println(pair.getCommonName());
      *
      * @param directory path to the required directory
      */
-    private void fillFileList(File directory, List<File> entries) {
+    private static void fillFileList(Path directory, List<Path> entries) throws IOException {
 
-        File[] files = directory.listFiles();
-
-        for (File file : files) {
-
-            if (file.isDirectory()) {
-                fillFileList(file, entries);
-            } else {
-                entries.add(file);
-            }
+        try (Stream<Path> list = Files.list(directory)) {
+            list.forEach(file -> {
+                try {
+                    if (Files.isDirectory(file)) {
+                        fillFileList(file, entries);
+                    } else {
+                        entries.add(file);
+                    }
+                } catch (IOException e) {
+                    throw new UncheckedIOException(e);
+                }
+            });
         }
     }
 
@@ -392,20 +398,18 @@ Debug.println(pair.getCommonName());
      *
      * @return null if not found.
      */
-    private File findIn(List<File> rfiles, File lfile) {
+    private Path findIn(List<Path> rights, Path left) {
 
         try {
-            String lt = getLeftFilePath();
-            String lf = lfile.getPath();
-            if (lf.startsWith(lt)) {
-                lf = lf.substring(lt.length() + 1);
+            Path lf = left;
+            if (lf.startsWith(getLeftFilePath())) {
+                lf = lf.getFileName();
 // Debug.println("lf: " + lf);
             }
-            String rt = getRightFilePath();
-            for (File rfile : rfiles) {
-                String rf = rfile.getPath();
-                if (rf.startsWith(rt)) {
-                    rf = rf.substring(rt.length() + 1);
+            for (Path rfile : rights) {
+                Path rf = rfile;
+                if (rf.startsWith(getRightFilePath())) {
+                    rf = rf.getFileName();
                 }
 // Debug.println("rf: " + rf);
                 if (lf.equals(rf)) {
@@ -511,7 +515,7 @@ Debug.println(pair.getCommonName());
                 if (pair.getMarked() && hideMarked) {
                     continue;
                 }
-                if (pair.getRight() == null || !pair.getRight().exists()) {
+                if (pair.getRight() == null || !Files.exists(pair.getRight())) {
 
                     w.write(getDescriptionForListing(pair));
                     w.newLine();
@@ -527,7 +531,7 @@ Debug.println(pair.getCommonName());
                 if (pair.getMarked() && hideMarked) {
                     continue;
                 }
-                if (pair.getLeft() == null || !pair.getLeft().exists()) {
+                if (pair.getLeft() == null || !Files.exists(pair.getLeft())) {
 
                     w.write(getDescriptionForListing(pair));
                     w.newLine();

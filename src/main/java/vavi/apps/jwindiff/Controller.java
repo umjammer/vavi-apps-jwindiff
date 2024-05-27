@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +62,7 @@ class Controller {
         this.model = model;
     }
 
-    //----
+    // ----
 
     /**
      * Rescans the currently selected file.
@@ -144,7 +143,7 @@ Debug.println("here3");
                     model.viewUpdated(this, "setNames", model.current.getCommonName());
                     model.viewUpdated(this, "setPaths", model.getLeftFilePath() + " : " + model.getRightFilePath());
                 } else {
-                    model.viewUpdated(this, "setNames", model.current.getLeft().getName() + " : " + model.current.getRight().getName());
+                    model.viewUpdated(this, "setNames", model.current.getLeft().getFileName().toString() + " : " + model.current.getRight().getFileName().toString());
                     model.viewUpdated(this, "setPaths", model.getLeftFilePath() + " : " + model.getRightFilePath());
                 }
                 model.current.slowDiff(model.isIgnoreBlanks());
@@ -187,9 +186,9 @@ Debug.println(Level.SEVERE, e);
     /**
      * form
      */
-    void displaySingleFile(File file) throws IOException {
+    void displaySingleFile(Path file) throws IOException {
 // Debug.println("here");
-        String[] lines = DiffUtil.readLines(file);
+        String[] lines = DiffUtil.readLines(file.toFile());
         model.viewUpdated(this, "displaySingleFile", (Object[]) lines);
     }
 
@@ -281,20 +280,20 @@ Debug.printStackTrace(e);
     /**
      * @controller
      */
-    void updateTargets(File left, File right) {
+    void updateTargets(Path left, Path right) {
         model.viewUpdated(this, "setTitle", rb.getString("frame.title.scanning"));
 
         model.getLeftFiles().clear();
         model.getRightFiles().clear();
 
+        model.getLeftFiles().add(left.toAbsolutePath());
+        model.getRightFiles().add(right.toAbsolutePath());
+
         try {
-            model.getLeftFiles().add(left.getCanonicalFile());
-            model.getRightFiles().add(right.getCanonicalFile());
+            model.updateTargets();
         } catch (IOException e) {
 Debug.println(e);
         }
-
-        model.updateTargets();
 
         finishWork();
     }
@@ -402,7 +401,7 @@ Debug.println(e);
         }
     }
 
-    //----
+    // ----
 
     /** form */
     void setCurrent(Pair pair) {
@@ -424,9 +423,9 @@ Debug.println(i + ": arg: " + args[i]);
             if ("-1".equals(args[i])) {
                 i++;
                 while (i < args.length) {
-                    File file = new File(args[i]);
-                    if (file.exists()) {
-                        file = new File(file.getCanonicalPath());
+                    Path file = Path.of(args[i]);
+                    if (Files.exists(file)) {
+                        file = file.toAbsolutePath();
                         model.getLeftFiles().add(file);
 Debug.println(i + ": add left: " + file);
                     } else {
@@ -439,9 +438,9 @@ Debug.println(i + ": not exists: " + file);
             } else if ("-2".equals(args[i])) {
                 i++;
                 while (i < args.length) {
-                    File file = new File(args[i]);
-                    if (file.exists()) {
-                        file = new File(file.getCanonicalPath());
+                    Path file = Path.of(args[i]);
+                    if (Files.exists(file)) {
+                        file = file.toAbsolutePath();
                         model.getRightFiles().add(file);
 Debug.println(i + ": add right: " + file);
                     } else {
@@ -452,22 +451,22 @@ Debug.println(i + ": not exists: " + file);
                     i++;
                 }
             } else {
-                File file = new File(args[i]);
+                Path file = Path.of(args[i]);
 Debug.println("file: " + file);
-                if (file.exists()) {
+                if (Files.exists(file)) {
                     if (i == 0) {
-                        file = new File(file.getCanonicalPath());
+                        file = file.toAbsolutePath();
                         model.getLeftFiles().add(file);
 Debug.println(i + ": add left: " + file);
                     } else if (i == 1) {
                         if (!model.getLeftFiles().isEmpty()) {
-                            File left = model.getLeftFiles().get(0);
-                            if (left.isDirectory() && file.isDirectory()) {
-                                file = new File(file.getCanonicalPath());
+                            Path left = model.getLeftFiles().get(0);
+                            if (Files.isDirectory(left) && Files.isDirectory(file)) {
+                                file = file.toAbsolutePath();
                                 model.getRightFiles().add(file);
 Debug.println(i + ": add right as directory: " + file);
-                            } else if (!left.isDirectory() && !file.isDirectory()) {
-                                file = new File(file.getCanonicalPath());
+                            } else if (!Files.isDirectory(left) && !Files.isDirectory(left)) {
+                                file = file.toAbsolutePath();
                                 model.getRightFiles().add(file);
 Debug.println(i + ": add right as file: " + file);
                             } else {
@@ -493,17 +492,21 @@ Debug.println(i + ":ignore: " + file);
 
     /** form */
     void pageMain() {
-        loadOptions();
-        model.viewUpdated(this, "initMain", model);
+        try {
+            loadOptions();
+            model.viewUpdated(this, "initMain", model);
 
-        model.viewUpdated(this, "pageMain");
+            model.viewUpdated(this, "pageMain");
 
-        model.viewUpdated(this, "setTitle", rb.getString("frame.title.scanning"));
-        model.updateTargets();
-        finishWork();
+            model.viewUpdated(this, "setTitle", rb.getString("frame.title.scanning"));
+            model.updateTargets();
+            finishWork();
 
-        // redisplayOutline();
-        update();
+            // redisplayOutline();
+            update();
+        } catch (IOException e) {
+            Debug.printStackTrace(e);
+        }
     }
 
     /** form */
@@ -549,8 +552,8 @@ Debug.println(i + ":ignore: " + file);
     void pageCompareTargetsDialog() {
         if (model.displayMode == DisplayMode.NONE_MODE) {
             if (!model.getLeftFiles().isEmpty() && !model.getRightFiles().isEmpty()) {
-                File left = model.getLeftFiles().get(0);
-                File right = model.getRightFiles().get(0);
+                Path left = model.getLeftFiles().get(0);
+                Path right = model.getRightFiles().get(0);
                 model.viewUpdated(this, "initCompareTargetsDialog", left, right);
             }
         }
@@ -576,10 +579,10 @@ Debug.println(i + ":ignore: " + file);
     /**
      * Invokes a editor.
      */
-    private void editFile(File file) {
+    private void editFile(Path file) {
         try {
-            if (file != null && file.exists() && model.editor != null) {
-                Runtime.getRuntime().exec(new String[] {model.editor, file.getAbsolutePath()});
+            if (file != null && Files.exists(file) && model.editor != null) {
+                Runtime.getRuntime().exec(new String[] {model.editor, file.toAbsolutePath().toString()});
             }
         } catch (Exception e) {
 Debug.printStackTrace(e);
@@ -593,28 +596,28 @@ Debug.printStackTrace(e);
     void copyFiles(Pair[] pairs) {
         for (Pair pair : pairs) {
 Debug.print(pair);
-            if (pair.getLeft() == null || !pair.getLeft().exists()) {
+            if (pair.getLeft() == null || !Files.exists(pair.getLeft())) {
                 try {
-                    Path file = Paths.get(pair.leftFilePath, pair.getCommonName());
+                    Path file = pair.leftDir.resolve(pair.getCommonName());
                     Path dir = file.getParent();
                     if (!Files.exists(dir)) {
                         Files.createDirectories(dir);
                     }
-                    Files.copy(Paths.get(pair.getRight().toURI()), file);
-                    pair.setLeft(file.toFile());
+                    Files.copy(pair.getRight(), file);
+                    pair.setLeft(file);
                     pair.rescan();
                 } catch (IOException e) {
                     Debug.printStackTrace(e);
                 }
-            } else if (pair.getRight() == null || !pair.getRight().exists()) {
+            } else if (pair.getRight() == null || !Files.exists(pair.getRight())) {
                 try {
-                    Path file = Paths.get(pair.rightFilePath, pair.getCommonName());
+                    Path file = pair.rightDir.resolve(pair.getCommonName());
                     Path dir = file.getParent();
                     if (!Files.exists(dir)) {
                         Files.createDirectories(dir);
                     }
-                    Files.copy(Paths.get(pair.getLeft().toURI()), file);
-                    pair.setRight(file.toFile());
+                    Files.copy(pair.getLeft(), file);
+                    pair.setRight(file);
                     pair.rescan();
                 } catch (IOException e) {
                     Debug.printStackTrace(e);
@@ -627,7 +630,7 @@ Debug.println("both files do not exist: " + pair.getCommonName());
     }
 
     /** */
-    void findDiff(Order order) {
+    void findDiff(Controller.Order order) {
         if (model.displayMode == DisplayMode.OUTLINE_MODE) {
             model.viewUpdated(this, "findOutline", order);
         } else {
@@ -780,8 +783,8 @@ Debug.println("both files do not exist: " + pair.getCommonName());
      * targetsDialog: ok
      */
     @SwingControllerAction(view = { "leftTargetChooser.selectedFile", "rightTargetChooser.selectedFile" })
-    void okTargetsDialogAction(File left, File right) {
-        if (left != null && left.exists() && right != null && right.exists()) {
+    void okTargetsDialogAction(Path left, Path right) {
+        if (left != null && Files.exists(left) && right != null && Files.exists(right)) {
             updateTargets(left, right);
             update();
         }

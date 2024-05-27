@@ -6,13 +6,17 @@
 
 package vavi.apps.jwindiff;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
 import vavi.util.Debug;
-import  vavi.util.diff.Diff;
-import  vavi.util.diff.DiffUtil;
+import vavi.util.diff.Diff;
+import vavi.util.diff.DiffUtil;
 
 
 /**
@@ -24,10 +28,10 @@ import  vavi.util.diff.DiffUtil;
 class Pair {
 
     /** TODO init */
-    String rightFilePath;
+    Path rightDir;
 
     /** TODO init */
-    String leftFilePath;
+    Path leftDir;
 
     /**
      *
@@ -58,28 +62,28 @@ class Pair {
     }
 
     /** */
-    File left;
+    Path left;
 
     /** */
-    public void setLeft(File left) {
+    public void setLeft(Path left) {
         this.left = left;
     }
 
     /** */
-    public File getLeft() {
+    public Path getLeft() {
         return left;
     }
 
     /** */
-    File right;
+    Path right;
 
     /** */
-    public void setRight(File right) {
+    public void setRight(Path right) {
         this.right = right;
     }
 
     /** */
-    public File getRight() {
+    public Path getRight() {
         return right;
     }
 
@@ -113,10 +117,10 @@ class Pair {
     }
 
     /** */
-    public Pair(String lbase, File left, String rbase, File right) {
-        this.leftFilePath = lbase;
+    public Pair(Path lbase, Path left, Path rbase, Path right) {
+        this.leftDir = lbase;
         this.left  = left;
-        this.rightFilePath = rbase;
+        this.rightDir = rbase;
         this.right = right;
     }
 
@@ -131,30 +135,22 @@ class Pair {
     /** */
     private void rescanInternal() {
         if (left == null) {
-            String rf = right.getPath();
-            String rt = rightFilePath;
-            String lf = rf.substring(rt.length());
-            String lt = leftFilePath;
-            File file = new File(lt, lf);
-            if (file.exists()) {
+            Path file = leftDir.resolve(right.getFileName());
+            if (Files.exists(file)) {
                 left = file;
 Debug.println("new left: " + left);
             }
         } else if (right == null) {
-            String lt = leftFilePath;
-            String lf = left.getPath();
-            String rt = rightFilePath;
-            String rf = lf.substring(lt.length());
-            File file = new File(rt, rf);
-            if (file.exists()) {
+            Path file = rightDir.resolve(left.getFileName());
+            if (Files.exists(file)) {
                 right = file;
 Debug.println("new right: " + right);
             }
         } else {
-            if (!left.exists()) {
+            if (!Files.exists(left)) {
                 left = null;
 Debug.println("disappear left");
-            } if (!right.exists()) {
+            } if (!Files.exists(right)) {
                 right = null;
 Debug.println("disappear right");
             }
@@ -165,20 +161,14 @@ Debug.println("disappear right");
     public String getCommonName() {
         try {
             if (right == null) {
-                String lt = leftFilePath;
-                String lf = left.getPath();
-                if (lf.startsWith(lt)) {
-                    lf = lf.substring(lt.length());
-                    return "." + lf;
+                if (left.startsWith(leftDir)) {
+                    return "./" + left.getFileName();
                 } else {
                     return left.toString();
                 }
             } else /* if (left == null) */ {
-                String rt = rightFilePath;
-                String rf = right.getPath();
-                if (rf.startsWith(rt)) {
-                    rf = rf.substring(rt.length());
-                    return "." + rf;
+                if (right.startsWith(rightDir)) {
+                    return "./" + right.getFileName();
                 } else {
                     return right.toString();
                 }
@@ -201,11 +191,11 @@ Debug.printStackTrace(e);
         String[] b;
 
         if (ignoreWhiteSpace) {
-            a = DiffUtil.readLinesIgnoreWhiteSpace(left);
-            b = DiffUtil.readLinesIgnoreWhiteSpace(right);
+            a = DiffUtil.readLinesIgnoreWhiteSpace(left.toFile());
+            b = DiffUtil.readLinesIgnoreWhiteSpace(right.toFile());
         } else {
-            a = DiffUtil.readLines(left);
-            b = DiffUtil.readLines(right);
+            a = DiffUtil.readLines(left.toFile());
+            b = DiffUtil.readLines(right.toFile());
         }
 
         Diff d = new Diff(a, b);
@@ -224,23 +214,48 @@ Debug.printStackTrace(e);
         // to begin with, allow blank-only diffs to show up
         // regardless of the current mode (for speed)
         try {
-            compare(false);
-            diff = script == null ? Type.IDENTICAL : Type.DIFFERENT_NOTSURE;
-        } catch (IOException e) {
-Debug.println(Level.SEVERE, left + " : " + right);
-Debug.println(Level.SEVERE, e);
-            // TODO binary diff
-            if (left.length() == right.length()) {
-                diff = Type.IDENTICAL;
+            if (!isBinaryFile(left)) {
+                compare(false);
+                diff = script == null ? Type.IDENTICAL : Type.DIFFERENT_NOTSURE;
             } else {
-                diff = Type.DIFFERENT_NOTSURE;
+                diff = compareBinary() ?  Type.IDENTICAL : Type.DIFFERENT_NOTSURE;
             }
+        } catch (IOException e) {
+Debug.printStackTrace(e);
+            diff = Type.INCOMPARABLE;
         }
     }
 
-    /**
-     *
-     */
+    private static final Map<Path, Boolean> isBinCache = new HashMap<>();
+
+    /** */
+    static boolean isBinaryFile(Path file) throws IOException {
+        Boolean result = isBinCache.get(file);
+        if (result == null) {
+            result = false;
+            int bufferSize = 1024; // Read 1 KB of the file
+            byte[] buffer = new byte[bufferSize];
+            try (InputStream fis = Files.newInputStream(file)) {
+                int bytesRead = fis.read(buffer, 0, bufferSize);
+                for (int i = 0; i < bytesRead; i++) {
+                    byte b = buffer[i];
+                    if (b < 0x09 || (b > 0x0D && b < 0x20) || b == 0x7F) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+            isBinCache.put(file, result);
+        }
+        return result;
+    }
+
+    /** TODO md5? */
+    boolean compareBinary() throws IOException {
+        return Files.size(left) == Files.size(right);
+    }
+
+    /** */
     public void slowDiff(boolean isIgnoreBlanks) {
         try {
             compare(isIgnoreBlanks);
@@ -255,7 +270,7 @@ Debug.println(Level.SEVERE, e);
                 diff = Type.DIFFERENT;
             }
         } catch (IOException e) {
-Debug.println(Level.SEVERE, e);
+            Debug.println(Level.SEVERE, e);
             diff = Type.INCOMPARABLE;
         }
     }
@@ -286,9 +301,9 @@ Debug.println(Level.SEVERE, e);
     @Override
     public String toString() {
         return "left: " + left +
-                ", lbase: " + leftFilePath +
+                ", lbase: " + leftDir +
                 ", right: " + right +
-                ", rbase: " + rightFilePath +
+                ", rbase: " + rightDir +
                 ", diff: " + diff +
                 ", marked: " + marked +
                 ", script: " + script +
