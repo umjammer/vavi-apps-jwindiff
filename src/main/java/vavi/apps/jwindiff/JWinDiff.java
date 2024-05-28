@@ -13,7 +13,7 @@ import vavi.swing.mvc.XView;
 /**
  * Java version of windiff.
  * <p>
- * TODO JList を JTable に
+ * TODO use JTable instead of JList
  * </p>
  * @author David Drysdale
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (nsano)
@@ -62,5 +62,3 @@ public class JWinDiff {
         new JWinDiff(args);
     }
 }
-
-/* */

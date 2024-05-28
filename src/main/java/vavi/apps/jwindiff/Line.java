@@ -14,6 +14,7 @@ package vavi.apps.jwindiff;
  * @version 0.00 040612 vavi refactoring <br>
  */
 class Line {
+
     /** */
     enum Type {
         /** */
@@ -74,5 +75,3 @@ class Line {
         this.flag = flag;
     }
 }
-
-/* */

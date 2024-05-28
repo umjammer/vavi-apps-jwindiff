@@ -255,5 +255,3 @@ if (!target.mousePressed().isEmpty()) logger.info(view.getClass().getSimpleName(
         }
     }
 }
-
-/* */

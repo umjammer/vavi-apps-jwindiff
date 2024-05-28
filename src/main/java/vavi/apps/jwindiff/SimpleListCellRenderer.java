@@ -8,6 +8,8 @@ package vavi.apps.jwindiff;
 
 import java.awt.Component;
 import java.awt.FontMetrics;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -17,6 +19,7 @@ import javax.swing.JList;
 import vavi.apps.jwindiff.Model.ShowExpandMode;
 import vavi.apps.jwindiff.Model.ShowNumMode;
 import vavi.apps.jwindiff.Pair.Type;
+import vavi.util.Debug;
 
 
 /**
@@ -89,26 +92,29 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
      * Returns a string describing the difference between two files.
      * Assumption: at least of the two files is indeed a REGULARFILE
      */
-    private String getDescription(Pair pair) {
-        if (pair.left == null) {
-            return MessageFormat.format(rb.getString("pair.description.only"), pair.rightFilePath);
-        } else if (pair.right == null) {
-            return MessageFormat.format(rb.getString("pair.description.only"), pair.leftFilePath);
-        } else if (pair.diff == Type.IDENTICAL) {
-            return rb.getString("pair.description.identical");
-        } else if (pair.diff == Type.DIFFERENT_BLANKS) {
-            return rb.getString("pair.description.differentBlanks");
-        } else if (pair.diff == Type.DIFFERENT || pair.diff == Type.DIFFERENT_NOTSURE) {
-            if (pair.left.lastModified() < pair.right.lastModified()) {
-                return MessageFormat.format(rb.getString("pair.description.different"), pair.rightFilePath);
-            } else if (pair.left.lastModified() > pair.right.lastModified()) {
-                return MessageFormat.format(rb.getString("pair.description.different"), pair.leftFilePath);
-            } else {
-                return rb.getString("pair.description.differentSametime");
+    private static String getDescription(Pair pair) {
+        try {
+            if (pair.left == null) {
+                return MessageFormat.format(rb.getString("pair.description.only"), pair.rightDir);
+            } else if (pair.right == null) {
+                return MessageFormat.format(rb.getString("pair.description.only"), pair.leftDir);
+            } else if (pair.diff == Type.IDENTICAL) {
+                return rb.getString("pair.description.identical");
+            } else if (pair.diff == Type.DIFFERENT_BLANKS) {
+                return rb.getString("pair.description.differentBlanks");
+            } else if (pair.diff == Type.DIFFERENT || pair.diff == Type.DIFFERENT_NOTSURE) {
+                if (Files.getLastModifiedTime(pair.left).compareTo(Files.getLastModifiedTime(pair.right)) < 0) {
+                    return MessageFormat.format(rb.getString("pair.description.different"), pair.rightDir);
+                } else if (Files.getLastModifiedTime(pair.left).compareTo(Files.getLastModifiedTime(pair.right)) > 0) {
+                    return MessageFormat.format(rb.getString("pair.description.different"), pair.leftDir);
+                } else {
+                    return rb.getString("pair.description.differentSametime");
+                }
             }
-        } else {
-            return rb.getString("pair.description.error");
+        } catch (IOException e) {
+            Debug.printStackTrace(e);
         }
+        return rb.getString("pair.description.error");
     }
 
     /**
@@ -155,8 +161,8 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
     }
 
     /** TODO */
-    private String toInt5(int i) {
-        String s = "    " + i;
+    private static String toInt5(int i) {
+        String s = " ".repeat(4) + i;
         return s.substring(s.length() - 5);
     }
 
@@ -173,7 +179,7 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
             } while (width > w);
         } else {
             do {
-                s = v + spaceN(n);
+                s = v + " ".repeat(n);
                 n++;
                 width = fontMetrics.stringWidth(s);
             } while (width < w);
@@ -182,25 +188,15 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         return s;
     }
 
-    /** TODO */
-    private String spaceN(int n) {
-//Debug.println(n);
-        StringBuilder sb = new StringBuilder(n);
-        for (int i = 0; i < n; i++) {
-            sb.append(' ');
-        }
-        return sb.toString();
-    }
-
-    /** TODO 漢字等の文字幅に対応していない */
-    private String replaceTabToSpace(String s) {
+    /** TODO Does not support the character width of kanji etc. */
+    private static String replaceTabToSpace(String s) {
         int p = 0;
         while (true) {
             p = s.indexOf('\t', p);
             if (p == -1) {
                 break;
             }
-            String tab = spaceN(8 - p % 8);
+            String tab = " ".repeat(8 - p % 8);
             String sb = s.substring(0, p);
             String sa = s.substring(p + 1);
             s = sb + tab + sa;
@@ -209,6 +205,3 @@ class SimpleListCellRenderer extends DefaultListCellRenderer {
         return s;
     }
 }
-
-/* */
-

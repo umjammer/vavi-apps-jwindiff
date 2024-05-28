@@ -25,11 +25,11 @@ import vavi.util.diff.DiffUtil;
 class Printer extends DiffUtil.BasicPrinter {
 
     /** */
-    private Model model;
+    private final Model model;
 
     /** */
     public Printer(Model model) throws IOException {
-        super(DiffUtil.readLines(model.current.left), DiffUtil.readLines(model.current.right));
+        super(DiffUtil.readLines(model.current.left.toFile()), DiffUtil.readLines(model.current.right.toFile()));
         this.model = model;
     }
 
@@ -164,5 +164,3 @@ class Printer extends DiffUtil.BasicPrinter {
         return listModel;
     }
 }
-
-/* */
